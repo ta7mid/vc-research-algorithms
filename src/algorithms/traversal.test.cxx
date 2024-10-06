@@ -72,108 +72,105 @@ vector<vector<unsigned>> read_simple_graph_from_file(const string& filepath)
 
 
 TEST_SUITE("DFS traversal is correct") {
-    TEST_CASE("graph_editor_default.txt") {
+    TEST_CASE("graph_editor_default.txt")
+    {
         const auto g = read_simple_graph_from_file("graph_editor_default.txt");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("gen/yosupo.jp/scc/example_00.in") {
-        const auto g = read_simple_graph_from_file("gen/yosupo.jp/scc/example_00.in");
-        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
-    }
-
-    TEST_CASE("networkrepository.com/order_2-16/Stranke94.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_2-16/Stranke94.txt");
-        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
-    }
-
-    TEST_CASE("networkrepository.com/order_2-16/Tina_AskCal.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_2-16/Tina_AskCal.txt");
-        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
-    }
-
-    TEST_CASE("networkrepository.com/order_2-16/Tina_AskCog.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_2-16/Tina_AskCog.txt");
-        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
-    }
-
-    TEST_CASE("networkrepository.com/order_2-16/Tina_DisCal.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_2-16/Tina_DisCal.txt");
-        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
-    }
-
-    TEST_CASE("networkrepository.com/order_2-16/Tina_DisCog.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_2-16/Tina_DisCog.txt");
-        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
-    }
-
-    TEST_CASE("networkrepository.com/order_2-16/soc-tribes.txt") {
+    TEST_CASE("networkrepository.com/order_2-16/soc-tribes.txt")
+    {
         const auto g = read_simple_graph_from_file("networkrepository.com/order_2-16/soc-tribes.txt");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("networkrepository.com/order_2-16/ucidata-gama.txt") {
+    TEST_CASE("networkrepository.com/order_2-16/ucidata-gama.txt")
+    {
         const auto g = read_simple_graph_from_file("networkrepository.com/order_2-16/ucidata-gama.txt");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("networkrepository.com/order_1025-2048/G25.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_1025-2048/G25.txt");
+    TEST_CASE("networkrepository.com/order_65-128/polbooks.txt")
+    {
+        const auto g = read_simple_graph_from_file("networkrepository.com/order_65-128/polbooks.txt");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("networkrepository.com/order_1025-2048/G42.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_1025-2048/G42.txt");
-        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
-    }
-
-    TEST_CASE("networkrepository.com/order_1025-2048/p-hat1500-1.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_1025-2048/p-hat1500-1.txt");
-        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
-    }
-
-    TEST_CASE("networkrepository.com/order_129-256/gen200-p0-9-44.txt") {
+    TEST_CASE("networkrepository.com/order_129-256/gen200-p0-9-44.txt")
+    {
         const auto g = read_simple_graph_from_file("networkrepository.com/order_129-256/gen200-p0-9-44.txt");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("networkrepository.com/order_257-512/SFHH-conf-sensor.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_257-512/SFHH-conf-sensor.txt");
-        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
-    }
-
-    TEST_CASE("networkrepository.com/order_257-512/gen400-p0-9-55.txt") {
+    TEST_CASE("networkrepository.com/order_257-512/gen400-p0-9-55.txt")
+    {
         const auto g = read_simple_graph_from_file("networkrepository.com/order_257-512/gen400-p0-9-55.txt");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("networkrepository.com/order_513-1024/G7.txt") {
+    TEST_CASE("networkrepository.com/order_513-1024/G7.txt")
+    {
         const auto g = read_simple_graph_from_file("networkrepository.com/order_513-1024/G7.txt");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("networkrepository.com/order_513-1024/DD68.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_513-1024/DD68.txt");
+    TEST_CASE("networkrepository.com/order_1025-2048/G25.txt")
+    {
+        const auto g = read_simple_graph_from_file("networkrepository.com/order_1025-2048/G25.txt");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("networkrepository.com/order_513-1024/G9.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_513-1024/G9.txt");
+    TEST_CASE("networkrepository.com/order_1025-2048/G42.txt")
+    {
+        const auto g = read_simple_graph_from_file("networkrepository.com/order_1025-2048/G42.txt");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("networkrepository.com/order_513-1024/p-hat1000-2.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_513-1024/p-hat1000-2.txt");
+    TEST_CASE("networkrepository.com/order_1025-2048/p-hat1500-1.txt")
+    {
+        const auto g = read_simple_graph_from_file("networkrepository.com/order_1025-2048/p-hat1500-1.txt");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("networkrepository.com/order_65-128/ia-hospital-ward-proximity-attr.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_65-128/ia-hospital-ward-proximity-attr.txt");
+    TEST_CASE("judge.yosupo.jp/scc/example_00.in")
+    {
+        const auto g = read_simple_graph_from_file("judge.yosupo.jp/scc/example_00.in");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 
-    TEST_CASE("networkrepository.com/order_65-128/polbooks.txt") {
-        const auto g = read_simple_graph_from_file("networkrepository.com/order_65-128/polbooks.txt");
+    TEST_CASE("judge.yosupo.jp/scc/large_cycle_00.in")
+    {
+        const auto g = read_simple_graph_from_file("judge.yosupo.jp/scc/large_cycle_00.in");
+        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+    }
+
+    TEST_CASE("judge.yosupo.jp/scc/max_random_00.in")
+    {
+        const auto g = read_simple_graph_from_file("judge.yosupo.jp/scc/max_random_00.in");
+        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+    }
+
+    TEST_CASE("judge.yosupo.jp/scc/max_random_01.in")
+    {
+        const auto g = read_simple_graph_from_file("judge.yosupo.jp/scc/max_random_01.in");
+        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+    }
+
+    TEST_CASE("judge.yosupo.jp/scc/max_random_02.in")
+    {
+        const auto g = read_simple_graph_from_file("judge.yosupo.jp/scc/max_random_02.in");
+        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+    }
+
+    TEST_CASE("judge.yosupo.jp/scc/max_random_03.in")
+    {
+        const auto g = read_simple_graph_from_file("judge.yosupo.jp/scc/max_random_03.in");
+        CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+    }
+
+    TEST_CASE("judge.yosupo.jp/scc/max_random_04.in")
+    {
+        const auto g = read_simple_graph_from_file("judge.yosupo.jp/scc/max_random_04.in");
         CHECK(dfs(g, 0) == recursive_dfs{g}(0));
     }
 }
