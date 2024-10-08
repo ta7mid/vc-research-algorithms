@@ -1,23 +1,24 @@
 #include <cassert>
 #include <vector>
 
-#include <algorithms/traversal.h>
+#include "dfs.h"
 
 using namespace std;
 
 
-vector<vector<unsigned>> dfs(const vector<vector<unsigned>>& adj, unsigned root)
+vector<vector<unsigned>> dfs(const vector<vector<unsigned>>& g, const unsigned source)
 {
-    const auto n = unsigned(adj.size());
+    const auto n = unsigned(g.size());
+    assert(source < n);
     vector<vector<unsigned>> tree(n);
-    vector<unsigned> neigh_offs(n, 0);  // neigh_offs[v] == 0 => v is unvisited
-    vector<unsigned> stack{root};
+    vector<unsigned> next_neighbor(n, 0);  // next_neighbor[v] == 0 => v is unvisited
+    vector<unsigned> stack{source};
     stack.reserve(n);
     while (not stack.empty()) {
         const auto parent = stack.back();
-        const auto& neighbors = adj[parent];
-        auto& child_idx = neigh_offs[parent];
-        while (child_idx != neighbors.size() and neigh_offs[neighbors[child_idx]] != 0)
+        const auto& neighbors = g[parent];
+        auto& child_idx = next_neighbor[parent];
+        while (child_idx != neighbors.size() and next_neighbor[neighbors[child_idx]] != 0)
             ++child_idx;
         if (child_idx == neighbors.size()) {
             stack.pop_back();
@@ -25,7 +26,7 @@ vector<vector<unsigned>> dfs(const vector<vector<unsigned>>& adj, unsigned root)
         }
         const auto child = neighbors[child_idx];
         ++child_idx;
-        assert(neigh_offs[child] == 0);
+        assert(next_neighbor[child] == 0);
         stack.push_back(child);
         tree[parent].push_back(child);
         tree[child].push_back(parent);
