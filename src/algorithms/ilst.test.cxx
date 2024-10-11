@@ -7,6 +7,7 @@
 
 #include "dfs.h"
 #include "ilst.h"
+#include <helpers/graph.h>
 #include <helpers/io.h>
 
 using namespace std;
@@ -30,27 +31,39 @@ static bool is_ilst(const vector<vector<unsigned>>& g, const vector<vector<unsig
     return true;
 }
 
-static bool has_edge(const vector<vector<unsigned>>& g, const unsigned u, const unsigned v)
-{
-    assert(u < g.size());
-    assert(v < g.size());
-
-    const auto& uadj = g[u];
-    return find(uadj.cbegin(), uadj.cend(), v) != uadj.cend();
-}
-
 
 TEST_SUITE("ILST") {
     TEST_CASE("ILST on graph_editor_default.txt")
     {
         const auto g = read_simple_graph_from_file(TEST_DATA_DIR "graph_editor_default.txt");
-        unsigned root{4};
+        /*
+            5-----4-----2
+            |\   /|    /|
+            |  X  |  /  |
+            |/   \|/    |
+            1     0     3
+        */
 
+        unsigned root{4};
         auto tree = dfs(g, root);
+        /*
+            5     4     2
+            |\    |    /|
+            |  \  |  /  |
+            |    \|/    |
+            1     0     3
+        */
         CHECK_FALSE(is_ilst(g, tree));
         CHECK(has_edge(tree, 0, 5));
 
         const bool is_ilst_{make_ilst_or_hamil_path(g, tree, root)};
+        /*
+            5     4     2
+            |    /|    /|
+            |  /  |  /  |
+            |/    |/    |
+            1     0     3
+        */
         CHECK(is_ilst_);
         CHECK(is_ilst(g, tree));
         CHECK_FALSE(has_edge(tree, 0, 5));
@@ -58,22 +71,9 @@ TEST_SUITE("ILST") {
         CHECK_EQ(root, 5);
     }
 
-    TEST_CASE("ILST on nice tree that is not g-independent")
+    TEST_CASE("ILST on a nice tree with one loop")
     {
-        /*
-                   0--
-                   |    `
-                   |       `
-                   1        \ <--- the DFS tree won't have this edge
-                  / \        \
-                 /    \       )
-                /      \      |
-               2        3     ,
-              / \      / \   /
-             /   \    /   \ /
-            4     5  6     7
-        */
-        auto g = read_simple_graph(
+        const auto g = read_simple_graph(
             R"(8
             8
             0 1
@@ -85,13 +85,52 @@ TEST_SUITE("ILST") {
             3 6
             3 7)"
         );
-        unsigned root{0};
+        /*
+                   0--
+                   |    `
+                   |       `
+                   1         \
+                  / \         \
+                 /    \        )
+                /       \      |
+               2         3     ,
+              / \       / \   /
+             /   \     /   \ /
+            4     5   6     7
+        */
 
+        unsigned root{0};
         auto tree = dfs(g, root);
+        /*
+                   0
+                   |
+                   |
+                   1
+                  / \
+                 /    \
+                /       \
+               2         3
+              / \       / \
+             /   \    /    \
+            4     5  6      7
+        */
         CHECK_FALSE(is_ilst(g, tree));
         CHECK_FALSE(has_edge(tree, 7, 0));
 
         const bool is_ilst_{make_ilst_or_hamil_path(g, tree, root)};
+        /*
+                   0--
+                   |    `
+                   |       `
+                   1         \
+                  / \         \
+                 /    \        )
+                /       \      |
+               2         3     ,
+              / \       /     /
+             /   \     /     /
+            4     5   6     7
+        */
         CHECK(is_ilst_);
         CHECK(is_ilst(g, tree));
         CHECK(has_edge(tree, 7, 0));
@@ -100,17 +139,7 @@ TEST_SUITE("ILST") {
 
     TEST_CASE("ILST on a ring graph")
     {
-        /*
-                 ____
-              _0'    `5_
-             /           \
-            |             |
-            1             4
-             \           /
-              `\        /
-                `2----3'
-        */
-        auto g = read_simple_graph(
+        const auto g = read_simple_graph(
             R"(6
             6
             0 1
@@ -121,14 +150,46 @@ TEST_SUITE("ILST") {
             5 0
             3 7)"
         );
-        unsigned root{1};
+        /*
+                 ____
+              _0'    `5_
+             /           \
+            |             |
+            1             4
+             \           /
+              `\        /
+                `2----3'
+        */
+        CHECK(has_edge(g, 0, 1));
 
+        unsigned root{1};
         auto tree = dfs(g, root);
+        /*
+                 ____
+               0'    `5_
+                         \
+                          |
+            1             4
+             \           /
+              `\        /
+                `2----3'
+        */
         CHECK_FALSE(is_ilst(g, tree));
+        CHECK_FALSE(has_edge(g, 0, 1));
 
         const auto old_tree = tree;
         const auto old_root = root;
         const bool is_ilst_{make_ilst_or_hamil_path(g, tree, root)};
+        /*
+                 ____
+               0'    `5_
+                         \
+                          |
+            1             4
+             \           /
+              `\        /
+                `2----3'
+        */
         CHECK_FALSE(is_ilst_);
         CHECK_EQ(old_tree, tree);
         CHECK_EQ(old_root, root);
