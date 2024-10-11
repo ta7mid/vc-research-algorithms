@@ -1,7 +1,7 @@
 #include <cassert>
 #include <vector>
 
-#include "dfs.h"
+#include <algorithms/dfs.h>
 
 using namespace std;
 

@@ -5,7 +5,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "dfs.h"
+#include <algorithms/dfs.h>
 #include <helpers/io.h>
 
 using namespace std;

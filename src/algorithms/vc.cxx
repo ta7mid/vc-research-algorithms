@@ -4,7 +4,8 @@
 #include <limits>
 #include <vector>
 
-#include "vc.h"
+#include <common/constants.h>
+#include <algorithms/vc.h>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ using namespace std;
  * @param root the root of the ILST
  * @return a vertex cover of g
  */
-bitset<max_n> ilst_to_vc(const vector<vector<unsigned>>& g, const vector<vector<unsigned>>& ilst, const unsigned root)
+bitset<max_order> ilst_to_vc(const vector<vector<unsigned>>& g, const vector<vector<unsigned>>& ilst, const unsigned root)
 {
     const auto n = unsigned(ilst.size());
 
@@ -63,7 +64,7 @@ bitset<max_n> ilst_to_vc(const vector<vector<unsigned>>& g, const vector<vector<
 
     /// best_vc_for_subtree[v][false] := smallest of the VCs for the subtree rooted at v.
     /// best_vc_for_subtree[v][true]  := smallest of the VCs _including_ v, for the subtree rooted at v.
-    vector<array<bitset<max_n>, 2>> best_vc_for_subtree(n, {bitset<max_n>{}, bitset<max_n>{}});
+    vector<array<bitset<max_order>, 2>> best_vc_for_subtree(n, {bitset<max_order>{}, bitset<max_order>{}});
 
     auto& lowest_slot = nodes_with_num_proper_subtrees_to_do[0];
     while (not lowest_slot.empty()) {

@@ -10,5 +10,7 @@ std::vector<std::vector<unsigned>> read_simple_graph(const char* graph_repr);
 
 std::vector<std::vector<unsigned>> read_simple_graph_from_file(const char* filepath);
 
+std::vector<std::vector<unsigned>> read_simple_graph_from_stdin();
+
 
 #endif // INCLUDE_HELPERS_IO_H_INCLUDED

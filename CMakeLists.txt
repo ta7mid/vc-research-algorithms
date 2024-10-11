@@ -11,6 +11,23 @@ target_sources(common INTERFACE include/common/constants.h)
 target_compile_features(common INTERFACE cxx_constexpr)
 target_include_directories(common INTERFACE include)
 
+add_library(algorithms
+  src/algorithms/dfs.cxx
+  include/algorithms/dfs.h
+
+  src/algorithms/ilst.cxx
+  include/algorithms/ilst.h
+
+  src/algorithms/orderings.cxx
+  include/algorithms/orderings.h
+
+  src/algorithms/vc.cxx
+  include/algorithms/vc.h
+)
+target_compile_features(algorithms PRIVATE cxx_std_11)
+target_include_directories(algorithms INTERFACE include)
+target_link_libraries(algorithms PUBLIC common)
+
 add_library(helpers
   src/helpers/graph.cxx
   include/helpers/graph.h
@@ -21,20 +38,11 @@ add_library(helpers
 )
 target_compile_features(helpers PRIVATE cxx_std_11)
 target_include_directories(helpers PUBLIC include)
-target_link_libraries(helpers PRIVATE common fmt::fmt)
+target_link_libraries(helpers PRIVATE fmt::fmt common)
 
-add_library(algorithms
-  src/algorithms/dfs.cxx
-  src/algorithms/dfs.h
-
-  src/algorithms/ilst.cxx
-  src/algorithms/ilst.h
-
-  src/algorithms/vc.cxx
-  src/algorithms/vc.h
-)
-target_compile_features(algorithms PRIVATE cxx_std_11)
-target_link_libraries(algorithms PRIVATE common)
+add_executable(cmd src/cmd/main.cxx)
+target_compile_features(cmd PRIVATE cxx_std_11)
+target_link_libraries(cmd PRIVATE fmt::fmt algorithms common helpers)
 
 include(CTest)
 if(BUILD_TESTING)

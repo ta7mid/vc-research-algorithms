@@ -3,9 +3,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "dfs.h"
-#include "ilst.h"
-#include "vc.h"
+#include <algorithms/dfs.h>
+#include <algorithms/ilst.h>
+#include <algorithms/vc.h>
 #include <common/constants.h>
 #include <helpers/io.h>
 
@@ -35,7 +35,7 @@ TEST_SUITE("ILST-to-VC") {
             1    [0]     3
         */
 
-        const auto want = bitset<max_n>{
+        const auto want = bitset<max_order>{
             1 << 0 |
             1 << 2 |
             1 << 4 |
@@ -90,7 +90,7 @@ TEST_SUITE("ILST-to-VC") {
             4     5  6     [7]
         */
 
-        const auto want = bitset<max_n>{
+        const auto want = bitset<max_order>{
             1 << 1 |
             1 << 2 |
             1 << 3 |

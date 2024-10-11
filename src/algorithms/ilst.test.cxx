@@ -5,8 +5,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "dfs.h"
-#include "ilst.h"
+#include <algorithms/dfs.h>
+#include <algorithms/ilst.h>
 #include <helpers/graph.h>
 #include <helpers/io.h>
 

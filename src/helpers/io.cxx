@@ -1,6 +1,6 @@
 #include <cassert>
 #include <fstream>
-#include <istream>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -28,16 +28,21 @@ vector<vector<unsigned>> read_simple_graph_from_file(const char* const filepath)
     return read(fin, fmt::format(" in file `{}`", filepath));
 }
 
+vector<vector<unsigned>> read_simple_graph_from_stdin()
+{
+    return read(cin, " in stdin:");
+}
+
 vector<vector<unsigned>> read(istream& iss, const string& additional_ctx)
 {
     unsigned n, m;
     iss >> n >> m;
 
     // validate n
-    if (n < min_n)
-        throw invalid_argument{fmt::format("# of nodes must be at least min_n={}, but n={} was input{}", min_n, n, additional_ctx)};
-    if (n > max_n)
-        throw invalid_argument{fmt::format("# of nodes must not exceed max_n={}, but n={} was input{}", max_n, n, additional_ctx)};
+    if (n < min_order)
+        throw invalid_argument{fmt::format("# of nodes must be at least min_n={}, but n={} was input{}", min_order, n, additional_ctx)};
+    if (n > max_order)
+        throw invalid_argument{fmt::format("# of nodes must not exceed max_n={}, but n={} was input{}", max_order, n, additional_ctx)};
 
     vector<vector<unsigned>> g(n);
     while (m--) {

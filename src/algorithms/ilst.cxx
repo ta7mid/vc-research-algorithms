@@ -2,7 +2,7 @@
 #include <cassert>
 #include <vector>
 
-#include "ilst.h"
+#include <algorithms/ilst.h>
 
 using namespace std;
 

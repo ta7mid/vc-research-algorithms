@@ -644,3 +644,4 @@ FodyWeavers.xsd
 
 ### Project-specific ###
 build/
+scratch.*
