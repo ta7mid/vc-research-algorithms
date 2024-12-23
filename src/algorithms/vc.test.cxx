@@ -12,6 +12,12 @@
 using namespace std;
 
 
+TEST_CASE("`init_data_structures` is correct")
+{
+    
+}
+
+
 TEST_SUITE("ILST-to-VC") {
     TEST_CASE("ILST-to-VC on graph_editor_default.txt")
     {
@@ -32,10 +38,10 @@ TEST_SUITE("ILST-to-VC") {
             |    /|    /|
             |  /  |  /  |
             |/    |/    |
-            1    [0]     3
+            1    [0]    3
         */
 
-        const auto want = bitset<max_order>{
+        constexpr auto want = bitset<max_order>{
             1 << 0 |
             1 << 2 |
             1 << 4 |
@@ -43,6 +49,7 @@ TEST_SUITE("ILST-to-VC") {
         };
         const auto got = ilst_to_vc(g, tree, root);
         CHECK_EQ(got, want);
+        CHECK(is_vc(g, got));
     }
 
     TEST_CASE("ILST-to-VC on a nice tree with one loop")
@@ -90,7 +97,7 @@ TEST_SUITE("ILST-to-VC") {
             4     5  6     [7]
         */
 
-        const auto want = bitset<max_order>{
+        constexpr auto want = bitset<max_order>{
             1 << 1 |
             1 << 2 |
             1 << 3 |
@@ -98,5 +105,6 @@ TEST_SUITE("ILST-to-VC") {
         };
         const auto got = ilst_to_vc(g, tree, root);
         CHECK_EQ(got, want);
+        CHECK(is_vc(g, got));
     }
 }

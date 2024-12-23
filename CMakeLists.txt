@@ -22,10 +22,11 @@ add_library(algorithms
   include/algorithms/orderings.h
 
   src/algorithms/vc.cxx
+  src/algorithms/vc.h
   include/algorithms/vc.h
 )
 target_compile_features(algorithms PRIVATE cxx_std_11)
-target_include_directories(algorithms INTERFACE include)
+target_include_directories(algorithms PUBLIC include)
 target_link_libraries(algorithms PUBLIC common)
 
 add_library(helpers

@@ -3,7 +3,6 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include <string>
 #include <vector>
 
 #include <fmt/format.h>
@@ -18,47 +17,48 @@ using namespace std;
 vector<vector<unsigned>> read_simple_graph(const char* const graph_representation)
 {
     istringstream iss{graph_representation};
-    return read(iss);
+    return read_simple_graph(iss);
 }
 
 vector<vector<unsigned>> read_simple_graph_from_file(const char* const filepath)
 {
     ifstream fin{filepath};
     assert(fin and fin.is_open());
-    return read(fin, fmt::format(" in file `{}`", filepath));
+    return read_simple_graph(fin);
 }
 
 vector<vector<unsigned>> read_simple_graph_from_stdin()
 {
-    return read(cin, " in stdin:");
+    return read_simple_graph(cin);
 }
 
-vector<vector<unsigned>> read(istream& iss, const string& additional_ctx)
+vector<vector<unsigned>> read_simple_graph(istream& iss)
 {
     unsigned n, m;
     iss >> n >> m;
-
-    // validate n
-    if (n < min_order)
-        throw invalid_argument{fmt::format("# of nodes must be at least min_n={}, but n={} was input{}", min_order, n, additional_ctx)};
-    if (n > max_order)
-        throw invalid_argument{fmt::format("# of nodes must not exceed max_n={}, but n={} was input{}", max_order, n, additional_ctx)};
+    if (n < min_order or n > max_order) {
+        throw domain_error{
+            fmt::format("graph order out of range [{},{}]", min_order, max_order)
+        };
+    }
 
     vector<vector<unsigned>> g(n);
+
     while (m--) {
         unsigned u, v;
-        iss >> u >> v;
 
-        // validate u and v
-        const bool u_is_bad{u >= n};
-        const bool v_is_bad{v >= n};
-        if (u_is_bad or v_is_bad) {
-            auto msg = fmt::format("invalid node ID(s) provided{}\n", additional_ctx);
-            if (u_is_bad)
-                msg += fmt::format("\tu = {} is not in the range [0, {})", u, n);
-            if (v_is_bad)
-                msg += fmt::format("\tv = {} is not in the range [0, {})", v, n);
-            throw invalid_argument{msg};
+        iss >> u;
+        if (u >= n) {
+            throw domain_error{
+                fmt::format("node ID out of range [0,{})", fmt::group_digits(n))
+            };
+        }
+
+        iss >> v;
+        if (v >= n) {
+            throw domain_error{
+                fmt::format("node ID out of range [0,{})", fmt::group_digits(n))
+            };
         }
 
         // skip self-loops

@@ -13,7 +13,7 @@
 using namespace std;
 
 
-static bool is_ilst(const vector<vector<unsigned>>& g, const vector<vector<unsigned>>& tree)
+static bool is_independence_tree(const vector<vector<unsigned>>& g, const vector<vector<unsigned>>& tree)
 {
     const auto n = unsigned(g.size());
     assert(n == tree.size());
@@ -23,8 +23,7 @@ static bool is_ilst(const vector<vector<unsigned>>& g, const vector<vector<unsig
         for (unsigned v{u + 1}; v != n; ++v) {
             if (tree[v].size() != 1) // not a leaf
                 continue;
-            const auto& uadj = g[u];
-            if (find(uadj.cbegin(), uadj.cend(), v) != uadj.cend())
+            if (const auto& uadj = g[u]; find(uadj.cbegin(), uadj.cend(), v) != uadj.cend())
                 return false;
         }
     }
@@ -53,10 +52,10 @@ TEST_SUITE("ILST") {
             |    \|/    |
             1     0     3
         */
-        CHECK_FALSE(is_ilst(g, tree));
+        CHECK_FALSE(is_independence_tree(g, tree));
         CHECK(has_edge(tree, 0, 5));
 
-        const bool is_ilst_{make_ilst_or_hamil_path(g, tree, root)};
+        const bool indenendence{make_ilst_or_hamil_path(g, tree, root)};
         /*
             5     4     2
             |    /|    /|
@@ -64,8 +63,8 @@ TEST_SUITE("ILST") {
             |/    |/    |
             1     0     3
         */
-        CHECK(is_ilst_);
-        CHECK(is_ilst(g, tree));
+        CHECK(indenendence);
+        CHECK(is_independence_tree(g, tree));
         CHECK_FALSE(has_edge(tree, 0, 5));
         CHECK(has_edge(tree, 1, 4));
         CHECK_EQ(root, 5);
@@ -114,10 +113,10 @@ TEST_SUITE("ILST") {
              /   \    /    \
             4     5  6      7
         */
-        CHECK_FALSE(is_ilst(g, tree));
+        CHECK_FALSE(is_independence_tree(g, tree));
         CHECK_FALSE(has_edge(tree, 7, 0));
 
-        const bool is_ilst_{make_ilst_or_hamil_path(g, tree, root)};
+        const bool indenendence{make_ilst_or_hamil_path(g, tree, root)};
         /*
                    0--
                    |    `
@@ -131,8 +130,8 @@ TEST_SUITE("ILST") {
              /   \     /     /
             4     5   6     7
         */
-        CHECK(is_ilst_);
-        CHECK(is_ilst(g, tree));
+        CHECK(indenendence);
+        CHECK(is_independence_tree(g, tree));
         CHECK(has_edge(tree, 7, 0));
         CHECK_EQ(root, 7);
     }
@@ -174,12 +173,12 @@ TEST_SUITE("ILST") {
               `\        /
                 `2----3'
         */
-        CHECK_FALSE(is_ilst(g, tree));
+        CHECK_FALSE(is_independence_tree(g, tree));
         CHECK_FALSE(has_edge(g, 0, 1));
 
         const auto old_tree = tree;
         const auto old_root = root;
-        const bool is_ilst_{make_ilst_or_hamil_path(g, tree, root)};
+        const bool indenendence{make_ilst_or_hamil_path(g, tree, root)};
         /*
                  ____
                0'    `5_
@@ -190,7 +189,7 @@ TEST_SUITE("ILST") {
               `\        /
                 `2----3'
         */
-        CHECK_FALSE(is_ilst_);
+        CHECK_FALSE(indenendence);
         CHECK_EQ(old_tree, tree);
         CHECK_EQ(old_root, root);
     }
