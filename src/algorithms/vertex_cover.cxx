@@ -5,9 +5,9 @@
 #include <limits>
 #include <vector>
 
-#include "vc.h"
+#include "vertex_cover.h"
 #include <common/constants.h>
-#include <algorithms/vc.h>
+#include <algorithms/vertex_cover.h>
 
 using namespace std;
 

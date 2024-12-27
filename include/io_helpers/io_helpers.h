@@ -1,7 +1,7 @@
 /* -*- C++ -*- */
 
-#ifndef INCLUDE_HELPERS_IO_H_INCLUDED
-#define INCLUDE_HELPERS_IO_H_INCLUDED
+#ifndef INCLUDE_IO_HELPERS_IO_HELPERS_H_INCLUDED
+#define INCLUDE_IO_HELPERS_IO_HELPERS_H_INCLUDED
 
 #include <vector>
 
@@ -13,4 +13,4 @@ std::vector<std::vector<unsigned>> read_simple_graph_from_file(const char* filep
 std::vector<std::vector<unsigned>> read_simple_graph_from_stdin();
 
 
-#endif // INCLUDE_HELPERS_IO_H_INCLUDED
+#endif // INCLUDE_IO_HELPERS_IO_HELPERS_H_INCLUDED

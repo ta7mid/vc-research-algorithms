@@ -23,16 +23,20 @@ bool make_ilst_or_hamil_path(const vector<vector<unsigned>>& g, vector<vector<un
 
     /// the first d-leaf of dfs_tree that is *not* g-independent with root -- equivalently, the first
     /// g-neighbor of root that is not a dfs_tree-neighbor of root and is a leaf in dfs_tree
-    const unsigned dleaf{
-        *find_if(
-            root_adj_in_g.cbegin() + 1,  // root_adj_in_g[0] is in the tree
-            root_adj_in_g.cend(),
-            [&](const unsigned u) {
-                // leaf means degree == 1
-                return dfs_tree[u].size() == 1;
-            }
-        )
-    };
+    const auto dleaf_it = find_if(
+        root_adj_in_g.cbegin() + 1,  // root_adj_in_g[0] is in the tree
+        root_adj_in_g.cend(),
+        [&](const unsigned u) {
+            // leaf means degree == 1
+            return dfs_tree[u].size() == 1;
+        }
+    );
+    if (dleaf_it == root_adj_in_g.cend()) {
+        // root's neighbors are all in the tree, so dfs_tree is already g-independent
+        return true;
+    }
+
+    const unsigned dleaf{*dleaf_it};
 
     auto& dleaf_adj = dfs_tree[dleaf];
 

@@ -7,9 +7,9 @@
 
 #include <fmt/format.h>
 
-#include "io.h"
+#include "io_helpers.h"
 #include <common/constants.h>
-#include <helpers/io.h>
+#include <io_helpers/io_helpers.h>
 
 using namespace std;
 
@@ -50,14 +50,14 @@ vector<vector<unsigned>> read_simple_graph(istream& iss)
         iss >> u;
         if (u >= n) {
             throw domain_error{
-                fmt::format("node ID out of range [0,{})", fmt::group_digits(n))
+                fmt::format("node ID out of range [0,{})", n)
             };
         }
 
         iss >> v;
         if (v >= n) {
             throw domain_error{
-                fmt::format("node ID out of range [0,{})", fmt::group_digits(n))
+                fmt::format("node ID out of range [0,{})", n)
             };
         }
 

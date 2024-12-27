@@ -1,7 +1,7 @@
 /* -*- C++ -*- */
 
-#ifndef SRC_ALGORITHMS_VC_H_INCLUDED
-#define SRC_ALGORITHMS_VC_H_INCLUDED
+#ifndef SRC_ALGORITHMS_VERTEX_COVER_H_INCLUDED
+#define SRC_ALGORITHMS_VERTEX_COVER_H_INCLUDED
 
 #include <vector>
 
@@ -21,4 +21,4 @@ void init_data_structures(
 );
 
 
-#endif // SRC_ALGORITHMS_VC_H_INCLUDED
+#endif // SRC_ALGORITHMS_VERTEX_COVER_H_INCLUDED

@@ -5,9 +5,9 @@
 
 #include <algorithms/dfs.h>
 #include <algorithms/ilst.h>
-#include <algorithms/vc.h>
+#include <algorithms/vertex_cover.h>
 #include <common/constants.h>
-#include <helpers/io.h>
+#include <io_helpers/io_helpers.h>
 
 using namespace std;
 

@@ -5,13 +5,13 @@
 
 #include <fmt/base.h>
 
+#include <algorithms/connectivity.h>
 #include <algorithms/dfs.h>
 #include <algorithms/ilst.h>
 #include <algorithms/orderings.h>
-#include <algorithms/vc.h>
-#include <common/constants.h>
-#include <helpers/graph.h>
-#include <helpers/io.h>
+#include <algorithms/vertex_cover.h>
+#include <graph_helpers/graph_helpers.h>
+#include <io_helpers/io_helpers.h>
 
 using namespace std;
 
@@ -35,14 +35,10 @@ int main()
     const auto approx_min_cvc = ilst_output_to_cvc(g, is_independence, tree, root);
     assert(is_vc(g, approx_min_cvc));
 
-    // derive a VC from the CVC tree
-    const auto approx_min_vc = cvc_tree_to_vc(g, tree, root);
-    assert(is_vc(g, approx_min_vc));
-
     // output
     for (unsigned v{0}; v < order; ++v) {
-        if (approx_min_vc[v])
+        if (approx_min_cvc[v])
             fmt::print("{} ", v);
     }
-    fmt::println("=> {}", approx_min_vc.count());
+    fmt::println("=> {}", approx_min_cvc.count());
 }

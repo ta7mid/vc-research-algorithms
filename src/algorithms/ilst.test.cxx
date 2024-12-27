@@ -7,8 +7,8 @@
 
 #include <algorithms/dfs.h>
 #include <algorithms/ilst.h>
-#include <helpers/graph.h>
-#include <helpers/io.h>
+#include <graph_helpers/graph_helpers.h>
+#include <io_helpers/io_helpers.h>
 
 using namespace std;
 

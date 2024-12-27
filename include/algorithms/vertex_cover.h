@@ -1,7 +1,7 @@
 /* -*- C++ -*- */
 
-#ifndef INCLUDE_ALGORITHMS_VC_H_INCLUDED
-#define INCLUDE_ALGORITHMS_VC_H_INCLUDED
+#ifndef INCLUDE_ALGORITHMS_VERTEX_COVER_H_INCLUDED
+#define INCLUDE_ALGORITHMS_VERTEX_COVER_H_INCLUDED
 
 #include <bitset>
 #include <vector>
@@ -39,4 +39,4 @@
 bool is_vc(const std::vector<std::vector<unsigned>>& g, const std::bitset<max_order>& is_included);
 
 
-#endif // INCLUDE_ALGORITHMS_VC_H_INCLUDED
+#endif // INCLUDE_ALGORITHMS_VERTEX_COVER_H_INCLUDED

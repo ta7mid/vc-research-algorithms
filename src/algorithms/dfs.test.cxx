@@ -6,7 +6,7 @@
 #include <doctest/doctest.h>
 
 #include <algorithms/dfs.h>
-#include <helpers/io.h>
+#include <io_helpers/io_helpers.h>
 
 using namespace std;
 
