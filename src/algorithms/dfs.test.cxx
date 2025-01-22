@@ -2,8 +2,7 @@
 #include <vector>
 #include <utility>
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <doctest/doctest.h>
+#include <catch2/catch_test_macros.hpp>
 
 #include <algorithms/dfs.h>
 #include <io_helpers/io_helpers.h>
@@ -41,106 +40,104 @@ struct recursive_dfs {
 };
 
 
-TEST_SUITE("DFS") {
-    TEST_CASE("DFS on graph_editor_default.txt")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "graph_editor_default.txt");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on graph_editor_default.txt")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "graph_editor_default.txt");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on networkrepository.com/order_2-16/soc-tribes.txt")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_2-16/soc-tribes.txt");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on networkrepository.com/order_2-16/soc-tribes.txt")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_2-16/soc-tribes.txt");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on networkrepository.com/order_2-16/ucidata-gama.txt")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_2-16/ucidata-gama.txt");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on networkrepository.com/order_2-16/ucidata-gama.txt")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_2-16/ucidata-gama.txt");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on networkrepository.com/order_65-128/polbooks.txt")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_65-128/polbooks.txt");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on networkrepository.com/order_65-128/polbooks.txt")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_65-128/polbooks.txt");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on networkrepository.com/order_129-256/gen200-p0-9-44.txt")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_129-256/gen200-p0-9-44.txt");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on networkrepository.com/order_129-256/gen200-p0-9-44.txt")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_129-256/gen200-p0-9-44.txt");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on networkrepository.com/order_257-512/gen400-p0-9-55.txt")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_257-512/gen400-p0-9-55.txt");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on networkrepository.com/order_257-512/gen400-p0-9-55.txt")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_257-512/gen400-p0-9-55.txt");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on networkrepository.com/order_513-1024/G7.txt")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_513-1024/G7.txt");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on networkrepository.com/order_513-1024/G7.txt")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_513-1024/G7.txt");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on networkrepository.com/order_1025-2048/G25.txt")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_1025-2048/G25.txt");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on networkrepository.com/order_1025-2048/G25.txt")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_1025-2048/G25.txt");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on networkrepository.com/order_1025-2048/G42.txt")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_1025-2048/G42.txt");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on networkrepository.com/order_1025-2048/G42.txt")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_1025-2048/G42.txt");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on networkrepository.com/order_1025-2048/p-hat1500-1.txt")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_1025-2048/p-hat1500-1.txt");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on networkrepository.com/order_1025-2048/p-hat1500-1.txt")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "networkrepository.com/order_1025-2048/p-hat1500-1.txt");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on judge.yosupo.jp/scc/example_00.in")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/example_00.in");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on judge.yosupo.jp/scc/example_00.in")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/example_00.in");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on judge.yosupo.jp/scc/large_cycle_00.in")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/large_cycle_00.in");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on judge.yosupo.jp/scc/large_cycle_00.in")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/large_cycle_00.in");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on judge.yosupo.jp/scc/max_random_00.in")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/max_random_00.in");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on judge.yosupo.jp/scc/max_random_00.in")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/max_random_00.in");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on judge.yosupo.jp/scc/max_random_01.in")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/max_random_01.in");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on judge.yosupo.jp/scc/max_random_01.in")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/max_random_01.in");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on judge.yosupo.jp/scc/max_random_02.in")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/max_random_02.in");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on judge.yosupo.jp/scc/max_random_02.in")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/max_random_02.in");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on judge.yosupo.jp/scc/max_random_03.in")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/max_random_03.in");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on judge.yosupo.jp/scc/max_random_03.in")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/max_random_03.in");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
+}
 
-    TEST_CASE("DFS on judge.yosupo.jp/scc/max_random_04.in")
-    {
-        const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/max_random_04.in");
-        CHECK_EQ(dfs(g, 0), recursive_dfs{g}(0));
-    }
+TEST_CASE("DFS on judge.yosupo.jp/scc/max_random_04.in")
+{
+    const auto g = read_simple_graph_from_file(TEST_DATA_DIR "judge.yosupo.jp/scc/max_random_04.in");
+    CHECK(dfs(g, 0) == recursive_dfs{g}(0));
 }

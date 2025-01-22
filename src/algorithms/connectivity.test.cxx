@@ -1,8 +1,7 @@
 #include <algorithm>
 #include <vector>
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <doctest/doctest.h>
+#include <catch2/catch_test_macros.hpp>
 
 #include <algorithms/connectivity.h>
 #include <io_helpers/io_helpers.h>
@@ -40,16 +39,16 @@ TEST_CASE("`next_connected_component` works")
 
     auto got = next_connected_component(g, visited);
     sort(got.begin(), got.end());
-    CHECK_EQ(got, vector<unsigned>{0, 1, 2, 3, 4, 5});
+    CHECK(got == vector<unsigned>{0, 1, 2, 3, 4, 5});
 
     got = next_connected_component(g, visited);
-    CHECK_EQ(got, vector<unsigned>{6});
-
-    got = next_connected_component(g, visited);
-    sort(got.begin(), got.end());
-    CHECK_EQ(got, vector<unsigned>{7, 8, 9});
+    CHECK(got == vector<unsigned>{6});
 
     got = next_connected_component(g, visited);
     sort(got.begin(), got.end());
-    CHECK_EQ(got, vector<unsigned>{10, 11});
+    CHECK(got == vector<unsigned>{7, 8, 9});
+
+    got = next_connected_component(g, visited);
+    sort(got.begin(), got.end());
+    CHECK(got == vector<unsigned>{10, 11});
 }

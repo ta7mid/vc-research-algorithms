@@ -3,8 +3,7 @@ project(VertexCoverResearch LANGUAGES C CXX)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include(cmake/CPM.cmake)
-CPMAddPackage("gh:fmtlib/fmt#11.0.2")
+find_package(fmt REQUIRED)
 
 add_library(common INTERFACE)
 target_sources(common INTERFACE include/common/constants.h)
@@ -62,39 +61,39 @@ target_link_libraries(local_ratio_vc PRIVATE fmt::fmt io_helpers)
 
 include(CTest)
 if(BUILD_TESTING)
-  CPMAddPackage("gh:doctest/doctest@2.4.11")
-  include("${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake")
+  find_package(Catch2 3 REQUIRED)
+  include(Catch)
 
   add_executable(connectivity_test src/algorithms/connectivity.test.cxx)
   target_compile_features(connectivity_test PRIVATE cxx_std_11)
   target_compile_definitions(connectivity_test PRIVATE TEST_DATA_DIR="${CMAKE_SOURCE_DIR}/data/")
   target_link_libraries(connectivity_test
-    PRIVATE doctest::doctest algorithms io_helpers
+    PRIVATE Catch2::Catch2WithMain algorithms io_helpers
   )
 
   add_executable(dfs_test src/algorithms/dfs.test.cxx)
   target_compile_features(dfs_test PRIVATE cxx_std_11)
   target_compile_definitions(dfs_test PRIVATE TEST_DATA_DIR="${CMAKE_SOURCE_DIR}/data/")
   target_link_libraries(dfs_test
-    PRIVATE doctest::doctest algorithms io_helpers
+    PRIVATE Catch2::Catch2WithMain algorithms io_helpers
   )
 
   add_executable(ilst_test src/algorithms/ilst.test.cxx)
   target_compile_features(ilst_test PRIVATE cxx_std_11)
   target_compile_definitions(ilst_test PRIVATE TEST_DATA_DIR="${CMAKE_SOURCE_DIR}/data/")
   target_link_libraries(ilst_test
-    PRIVATE doctest::doctest algorithms graph_helpers io_helpers
+    PRIVATE Catch2::Catch2WithMain algorithms graph_helpers io_helpers
   )
 
   add_executable(vertex_cover_test src/algorithms/vertex_cover.test.cxx)
   target_compile_features(vertex_cover_test PRIVATE cxx_std_11)
   target_compile_definitions(vertex_cover_test PRIVATE TEST_DATA_DIR="${CMAKE_SOURCE_DIR}/data/")
   target_link_libraries(vertex_cover_test
-    PRIVATE doctest::doctest algorithms common io_helpers
+    PRIVATE Catch2::Catch2WithMain algorithms common io_helpers
   )
 
-  doctest_discover_tests(connectivity_test)
-  doctest_discover_tests(dfs_test)
-  doctest_discover_tests(ilst_test)
-  doctest_discover_tests(vertex_cover_test)
+  catch_discover_tests(connectivity_test)
+  catch_discover_tests(dfs_test)
+  catch_discover_tests(ilst_test)
+  catch_discover_tests(vertex_cover_test)
 endif()
