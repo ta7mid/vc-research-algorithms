@@ -144,8 +144,7 @@ TEST_CASE("ILST on a ring graph")
         2 3
         3 4
         4 5
-        5 0
-        3 7)"
+        5 0)"
     );
     /*
              ____
@@ -157,35 +156,35 @@ TEST_CASE("ILST on a ring graph")
           `\        /
             `2----3'
     */
-    CHECK(has_edge(g, 0, 1));
+    CHECK(has_edge(g, 1, 2));
 
     unsigned root{1};
     auto tree = dfs(g, root);
     /*
              ____
-           0'    `5_
-                     \
-                      |
+          _0'    `5_
+         /           \
+        |             |
         1             4
-         \           /
-          `\        /
-            `2----3'
+                     /
+                    /
+             2----3'
     */
     CHECK_FALSE(is_independence_tree(g, tree));
-    CHECK_FALSE(has_edge(g, 0, 1));
+    CHECK_FALSE(has_edge(tree, 1, 2));
 
     const auto old_tree = tree;
     const auto old_root = root;
     const bool indenendence{make_ilst_or_hamil_path(g, tree, root)};
     /*
              ____
-           0'    `5_
-                     \
-                      |
+          _0'    `5_
+         /           \
+        |             |
         1             4
-         \           /
-          `\        /
-            `2----3'
+                     /
+                    /
+             2----3'
     */
     CHECK_FALSE(indenendence);
     CHECK(old_tree == tree);

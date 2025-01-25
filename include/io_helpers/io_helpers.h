@@ -12,5 +12,6 @@ std::vector<std::vector<unsigned>> read_simple_graph_from_file(const char* filep
 
 std::vector<std::vector<unsigned>> read_simple_graph_from_stdin();
 
+void print_adjacency_list(std::ostream& os, const std::vector<std::vector<unsigned>>& g);
 
 #endif // INCLUDE_IO_HELPERS_IO_HELPERS_H_INCLUDED

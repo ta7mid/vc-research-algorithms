@@ -32,6 +32,16 @@ vector<vector<unsigned>> read_simple_graph_from_stdin()
     return read_simple_graph(cin);
 }
 
+void print_adjacency_list(std::ostream& os, const std::vector<std::vector<unsigned>>& g)
+{
+    for (unsigned u{0}; u < g.size(); ++u) {
+        os << u << ':';
+        for (const auto v : g[u])
+            os << ' ' << v;
+        os << '\n';
+    }
+}
+
 vector<vector<unsigned>> read_simple_graph(istream& iss)
 {
     unsigned n, m;
