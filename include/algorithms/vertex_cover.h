@@ -32,7 +32,7 @@
  */
 [[nodiscard]] std::bitset<max_order> ilst_to_vc(
     const std::vector<std::vector<unsigned>>& g,
-    std::vector<std::vector<unsigned>>& ilst,
+    const std::vector<std::vector<unsigned>>& ilst,
     unsigned root
 );
 
