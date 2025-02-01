@@ -12,7 +12,7 @@ constexpr unsigned min_order{3};
 /**
  * Maximum allowed order of a graph
  */
-constexpr unsigned max_order{1u << 20};
+constexpr unsigned max_order{1u << 25};
 
 
 #endif // INCLUDE_COMMON_CONSTANTS_H_INCLUDED

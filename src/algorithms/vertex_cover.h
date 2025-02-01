@@ -3,6 +3,7 @@
 #ifndef SRC_ALGORITHMS_VERTEX_COVER_H_INCLUDED
 #define SRC_ALGORITHMS_VERTEX_COVER_H_INCLUDED
 
+#include <unordered_set>
 #include <vector>
 
 
@@ -14,9 +15,9 @@ void init_data_structures(
     const unsigned root,
 
     // out params
-    std::vector<unsigned>& node_parent,
-    std::vector<unsigned>& level,
-    std::vector<std::vector<unsigned>>& nodes_with_nchildren_todo,
+    std::vector<unsigned>& parent,
+    std::vector<unsigned>& nchildren,
+    std::vector<std::unordered_set<unsigned>>& nodes_with_nchildren,
     std::vector<bool>& covers_nontree_edge
 );
 

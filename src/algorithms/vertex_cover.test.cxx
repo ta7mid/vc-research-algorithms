@@ -1,11 +1,10 @@
-#include <bitset>
+#include <unordered_set>
 
 #include <catch2/catch_test_macros.hpp>
 
 #include <algorithms/dfs.h>
 #include <algorithms/ilst.h>
 #include <algorithms/vertex_cover.h>
-#include <common/constants.h>
 #include <io_helpers/io_helpers.h>
 
 using namespace std;
@@ -39,14 +38,9 @@ TEST_CASE("ILST-to-VC on graph_editor_default.txt")
         1    [0]    3
     */
 
-    constexpr auto want = bitset<max_order>{
-        1 << 0 |
-        1 << 2 |
-        1 << 4 |
-        1 << 5
-    };
-    const auto got = ilst_to_vc(g, tree, root);
-    CHECK(got == want);
+    const auto got_list = cvc_tree_to_vc(g, tree, root);
+    const auto got = unordered_set<unsigned>{got_list.cbegin(), got_list.cend()};
+    CHECK(got == unordered_set<unsigned>{0, 2, 4, 5});
     CHECK(is_vc(g, got));
 }
 
@@ -95,13 +89,8 @@ TEST_CASE("ILST-to-VC on a nice tree with one loop")
         4     5  6     [7]
     */
 
-    constexpr auto want = bitset<max_order>{
-        1 << 1 |
-        1 << 2 |
-        1 << 3 |
-        1 << 7
-    };
-    const auto got = ilst_to_vc(g, tree, root);
-    CHECK(got == want);
+    const auto got_list = cvc_tree_to_vc(g, tree, root);
+    const auto got = unordered_set<unsigned>{got_list.cbegin(), got_list.cend()};
+    CHECK(got == unordered_set<unsigned>{1, 2, 3, 7});
     CHECK(is_vc(g, got));
 }

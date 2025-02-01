@@ -1,9 +1,9 @@
-#include <bitset>
 #include <cassert>
 #include <stdexcept>
 #include <vector>
 
 #include <fmt/base.h>
+#include <fmt/ranges.h>
 
 #include <algorithms/connectivity.h>
 #include <algorithms/dfs.h>
@@ -36,9 +36,5 @@ int main()
     assert(is_vc(g, approx_min_cvc));
 
     // output
-    for (unsigned v{0}; v < order; ++v) {
-        if (approx_min_cvc[v])
-            fmt::print("{} ", v);
-    }
-    fmt::println("=> {}", approx_min_cvc.count());
+    fmt::println("{} => {}", fmt::join(approx_min_cvc, ", "), approx_min_cvc.size());
 }

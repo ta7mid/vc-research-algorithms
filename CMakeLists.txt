@@ -2,8 +2,15 @@ cmake_minimum_required(VERSION 3.14)
 project(VertexCoverResearch LANGUAGES C CXX)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/sanitizers-cmake/cmake")
 
 find_package(fmt REQUIRED)
+
+option(ENABLE_SANITIZERS "Enables sanitizers" ON)
+option(USE_MEMORY_SANITIZER
+    "Enables MSan (available only in Clang) and disables ASan; has no effect if compiler is not Clang or ENABLE_SANITIZERS is OFF"
+    OFF
+)
 
 add_library(common INTERFACE)
 target_sources(common INTERFACE include/common/constants.h)
@@ -27,9 +34,8 @@ add_library(algorithms
   src/algorithms/vertex_cover.h
   include/algorithms/vertex_cover.h
 )
-target_compile_features(algorithms PRIVATE cxx_std_11)
+target_compile_features(algorithms PRIVATE cxx_std_14)
 target_include_directories(algorithms PUBLIC include)
-target_link_libraries(algorithms PUBLIC common)
 
 add_library(io_helpers
   src/io_helpers/io_helpers.cxx
@@ -38,26 +44,26 @@ add_library(io_helpers
 )
 target_compile_features(io_helpers PRIVATE cxx_std_11)
 target_include_directories(io_helpers PUBLIC include)
-target_link_libraries(io_helpers PRIVATE fmt::fmt common)
+target_link_libraries(io_helpers PRIVATE fmt::fmt-header-only common)
 
 add_library(graph_helpers
   src/graph_helpers/graph_helpers.cxx
   include/graph_helpers/graph_helpers.h
 )
-target_compile_features(graph_helpers PRIVATE cxx_std_11)
+target_compile_features(graph_helpers PRIVATE cxx_std_17)
 target_include_directories(graph_helpers PUBLIC include)
 
 add_executable(cvc src/cmd/cvc/main.cxx)
 target_compile_features(cvc PRIVATE cxx_std_11)
-target_link_libraries(cvc PRIVATE fmt::fmt algorithms common graph_helpers io_helpers)
+target_link_libraries(cvc PRIVATE fmt::fmt-header-only algorithms graph_helpers io_helpers)
 
 add_executable(vc src/cmd/vc/main.cxx)
 target_compile_features(vc PRIVATE cxx_std_11)
-target_link_libraries(vc PRIVATE fmt::fmt algorithms common graph_helpers io_helpers)
+target_link_libraries(vc PRIVATE fmt::fmt-header-only algorithms graph_helpers io_helpers)
 
 add_executable(local_ratio_vc src/cmd/local_ratio_vc/main.cxx)
 target_compile_features(local_ratio_vc PRIVATE cxx_std_11)
-target_link_libraries(local_ratio_vc PRIVATE fmt::fmt io_helpers)
+target_link_libraries(local_ratio_vc PRIVATE fmt::fmt-header-only io_helpers)
 
 include(CTest)
 if(BUILD_TESTING)
@@ -79,7 +85,7 @@ if(BUILD_TESTING)
   )
 
   add_executable(ilst_test src/algorithms/ilst.test.cxx)
-  target_compile_features(ilst_test PRIVATE cxx_std_11)
+  target_compile_features(ilst_test PRIVATE cxx_std_17)
   target_compile_definitions(ilst_test PRIVATE TEST_DATA_DIR="${CMAKE_SOURCE_DIR}/data/")
   target_link_libraries(ilst_test
     PRIVATE Catch2::Catch2WithMain algorithms graph_helpers io_helpers
@@ -89,11 +95,31 @@ if(BUILD_TESTING)
   target_compile_features(vertex_cover_test PRIVATE cxx_std_11)
   target_compile_definitions(vertex_cover_test PRIVATE TEST_DATA_DIR="${CMAKE_SOURCE_DIR}/data/")
   target_link_libraries(vertex_cover_test
-    PRIVATE Catch2::Catch2WithMain algorithms common io_helpers
+    PRIVATE Catch2::Catch2WithMain algorithms io_helpers
   )
 
   catch_discover_tests(connectivity_test)
   catch_discover_tests(dfs_test)
   catch_discover_tests(ilst_test)
   catch_discover_tests(vertex_cover_test)
+endif()
+
+if(ENABLE_SANITIZERS)
+  find_package(Sanitizers REQUIRED)
+
+  set(SANITIZE_UNDEFINED ON)
+  if(USE_MEMORY_SANITIZER)
+    set(SANITIZE_MEMORY ON)
+  else()
+    set(SANITIZE_ADDRESS ON)
+  endif()
+
+  add_sanitizers(
+    algorithms
+    io_helpers
+    graph_helpers
+    cvc
+    vc
+    local_ratio_vc
+  )
 endif()

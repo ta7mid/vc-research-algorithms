@@ -16,6 +16,7 @@ vector<unsigned> next_connected_component(const vector<vector<unsigned>>& g, vec
 
     visited[root] = true;
     component_nodes.push_back(root);
+
     vector<unsigned> stack{root};
     stack.reserve(n);
     vector<unsigned> next_neigh_idx(n, 0);  // (next_neigh_idx[v] != 0) == visited[v]
@@ -25,7 +26,7 @@ vector<unsigned> next_connected_component(const vector<vector<unsigned>>& g, vec
         const auto& neighbors = g[parent];
         auto& child_idx = next_neigh_idx[parent];
 
-        while (child_idx != neighbors.size() and visited[neighbors[child_idx]])
+        while (child_idx < neighbors.size() and visited[neighbors[child_idx]])
             ++child_idx;
 
         if (child_idx == neighbors.size()) {

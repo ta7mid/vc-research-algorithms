@@ -1,8 +1,7 @@
 #include <algorithm>
-#include <array>
-#include <bitset>
 #include <cassert>
 #include <limits>
+#include <unordered_set>
 #include <vector>
 
 #include "vertex_cover.h"
@@ -11,28 +10,27 @@
 
 using namespace std;
 
-using Bitmask = bitset<max_order>;
 
-constexpr auto non_node = numeric_limits<unsigned>::max();
+constexpr auto not_a_node = numeric_limits<unsigned>::max();
 
 
-Bitmask ilst_output_to_cvc(const vector<vector<unsigned>>& g, const bool is_ilst, vector<vector<unsigned>>& ilst, unsigned& root)
+unordered_set<unsigned> ilst_output_to_cvc(const vector<vector<unsigned>>& g, const bool is_ilst, vector<vector<unsigned>>& ilst, unsigned& root)
 {
-    Bitmask res;
+    unordered_set<unsigned> cvc;
 
     // take all non-leaf nodes
     for (unsigned v{0}; v < g.size(); ++v) {
         if (ilst[v].size() != 1)
-            res.set(v);
+            cvc.insert(v);
     }
 
     // if it’s a non-indenedence Hamiltonian path, the root is a leaf, but it should be in the CVC tree
     if (not is_ilst)
-        res.set(root);
+        cvc.insert(root);
 
     // modify the tree correspondingly
     for (unsigned v{0}; v < g.size(); ++v) {
-        if (not res.test(v)) {
+        if (cvc.find(v) == cvc.cend()) {
             if (v == root)
                 root = delete_leaf(ilst, v);
             else
@@ -40,7 +38,7 @@ Bitmask ilst_output_to_cvc(const vector<vector<unsigned>>& g, const bool is_ilst
         }
     }
 
-    return res;
+    return cvc;
 }
 
 unsigned delete_leaf(vector<vector<unsigned>>& tree, const unsigned leaf)
@@ -53,146 +51,98 @@ unsigned delete_leaf(vector<vector<unsigned>>& tree, const unsigned leaf)
     return parent;
 }
 
-Bitmask cvc_tree_to_vc(const vector<vector<unsigned>>& g, const vector<vector<unsigned>>& cvc_tree, const unsigned root)
+bool is_vc(const vector<vector<unsigned>>& g, const unordered_set<unsigned>& node_set)
 {
-    assert(any_of(cvc_tree.cbegin(), cvc_tree.cend(), [](const vector<unsigned>& nn) { return nn.size() == 1; }));
+    for (unsigned u{0}; u < g.size(); ++u) {
+        for (const auto v : g[u]) {  // for each edge (u, v)
+            if (node_set.find(u) == node_set.cend() and node_set.find(v) == node_set.cend())
+                return false;
+        }
+    }
+    return true;
+}
 
+bool is_vc(const vector<vector<unsigned>>& g, const vector<unsigned>& node_list)
+{
+    unordered_set<unsigned> set(node_list.cbegin(), node_list.cend());
+    return is_vc(g, set);
+}
+
+unordered_set<unsigned> cvc_tree_to_vc(const vector<vector<unsigned>>& g, vector<vector<unsigned>> cvc_tree, const unsigned root)
+{
     const auto n = unsigned(g.size());
+    assert(n == cvc_tree.size());
 
-    /// mapping: node -> # of node's children whose subtrees remain to be solved
-    vector<unsigned> nchildren_todo(n);
-
-    /// mapping: # -> list of nodes with # children whose subtrees remain to be solved
-    vector<vector<unsigned>> nodes_with_nchildren_todo(n - 1);
+    vector<unsigned> nchildren(n);
+    vector<unordered_set<unsigned>> nodes_with_nchildren(n);
 
     /// mapping: node -> whether the node is incident on a an edge of g that is not in cvc_tree
     vector<bool> covers_nontree_edge(n, false);
 
-    /// mapping: node -> node's parent (or -1u if node is root) in cvc_tree
-    vector<unsigned> parent_of_node(n, non_node);
+    /// mapping: node -> node's parent (or `not_a_node` if node is root) in cvc_tree
+    vector<unsigned> parent(n, not_a_node);
 
-    init_data_structures(g, cvc_tree, root, parent_of_node, nchildren_todo, nodes_with_nchildren_todo, covers_nontree_edge);
+    init_data_structures(g, cvc_tree, root, parent, nchildren, nodes_with_nchildren, covers_nontree_edge);
 
-    /// best_vc_for_subtree[v][false] := smallest of the VCs of the subtree rooted at v.
-    /// best_vc_for_subtree[v][true]  := smallest of the VCs, _including_ v, of the subtree rooted at v.
-    vector<array<Bitmask, 2>> best_vc_for_subtree(n, {Bitmask{}, Bitmask{}});
+    /// recursively delete the node and its children
+    auto delete_node_and_descendents = [&](unsigned node) -> void {
+        vector<unsigned> to_delete{node};
+        while (not to_delete.empty()) {
+            node = to_delete.back();
+            auto& neighbors = cvc_tree[node];
+            const auto the_parent = parent[node];
 
-    auto& nodes_with_all_children_done = nodes_with_nchildren_todo[0];
-    while (not nodes_with_all_children_done.empty()) {
-        const auto subtree_root = nodes_with_all_children_done.back();
-        nodes_with_all_children_done.pop_back();
-        const auto parent = parent_of_node[subtree_root];
-        const auto& neighbors = cvc_tree[subtree_root];
-
-        auto& best_vc_incl_root = best_vc_for_subtree[subtree_root][true];
-        best_vc_incl_root.set(subtree_root);
-        for (const auto neighbor : neighbors) {
-            if (neighbor == parent)
-                continue;
-            // `neighbor` is a child of `subtree_root`
-            best_vc_incl_root |= best_vc_for_subtree[neighbor][false];
-        }
-
-        auto& best_vc = best_vc_for_subtree[subtree_root][false];
-        if (covers_nontree_edge[subtree_root])
-            best_vc = best_vc_incl_root;
-        else {
-            for (const auto neighbor : neighbors) {
-                if (neighbor == parent)
-                    continue;
-                // `neighbor` is a child of `subtree_root`
-                best_vc |= best_vc_for_subtree[neighbor][true];
+            to_delete.pop_back();
+            for (const auto child : neighbors) {
+                if (child != the_parent)
+                    to_delete.push_back(child);
             }
 
-            if (best_vc_incl_root.count() < best_vc.count())
-                best_vc = best_vc_incl_root;
-        }
+            if (the_parent != not_a_node) {
+                neighbors.erase(find(neighbors.begin(), neighbors.end(), the_parent));
 
-        if (parent == non_node) {
-            // subtree_root == root, so we're done
-            break;
-        }
-
-        auto& ntodo = nchildren_todo[parent];
-        assert(ntodo > 0);
-        auto& old_slot = nodes_with_nchildren_todo[ntodo];
-
-        // the subtree rooted at the child `subtree_root` of `parent` is done,
-        old_slot.erase(find(old_slot.begin(), old_slot.end(), parent));
-        nodes_with_nchildren_todo[--ntodo].push_back(parent);
-    }
-
-    return best_vc_for_subtree[root][false];
-}
-
-Bitmask ilst_to_vc(const vector<vector<unsigned>>& g, const vector<vector<unsigned>>& ilst, const unsigned root)
-{
-    const auto n = unsigned(g.size());
-
-    /// mapping: node -> # of node's children whose subtrees remain to be solved
-    vector<unsigned> nchildren_todo(n);
-
-    /// mapping: # -> list of nodes with # children whose subtrees remain to be solved
-    vector<vector<unsigned>> nodes_with_nchildren_todo(n - 1);
-
-    /// mapping: node -> whether the node is incident on a an edge of g that is not in ilst
-    vector<bool> covers_nontree_edge(n, false);
-
-    /// mapping: node -> node's parent (or -1u if node is root) in ilst
-    vector<unsigned> parent_of_node(n, non_node);
-
-    init_data_structures(g, ilst, root, parent_of_node, nchildren_todo, nodes_with_nchildren_todo, covers_nontree_edge);
-
-    /// best_vc_for_subtree[v][false] := smallest of the VCs for the subtree rooted at v.
-    /// best_vc_for_subtree[v][true]  := smallest of the VCs _including_ v, for the subtree rooted at v.
-    vector<array<Bitmask, 2>> best_vc_for_subtree(n, {Bitmask{}, Bitmask{}});
-
-    auto& nodes_with_all_children_done = nodes_with_nchildren_todo[0];
-    while (not nodes_with_all_children_done.empty()) {
-        const auto subtree_root = nodes_with_all_children_done.back();
-        nodes_with_all_children_done.pop_back();
-        const auto parent = parent_of_node[subtree_root];
-        const auto& neighbors = ilst[subtree_root];
-
-        auto& best_vc_incl_root = best_vc_for_subtree[subtree_root][true];
-        best_vc_incl_root.set(subtree_root);
-        for (const auto neighbor : neighbors) {
-            if (neighbor == parent)
-                continue;
-            // `neighbor` is a child of `subtree_root`
-            best_vc_incl_root |= best_vc_for_subtree[neighbor][false];
-        }
-
-        auto& best_vc = best_vc_for_subtree[subtree_root][false];
-        if (covers_nontree_edge[subtree_root])
-            best_vc = best_vc_incl_root;
-        else {
-            for (const auto neighbor : neighbors) {
-                if (neighbor == parent)
-                    continue;
-                // `neighbor` is a child of `subtree_root`
-                best_vc |= best_vc_for_subtree[neighbor][true];
+                auto& neighbors_of_parent = cvc_tree[the_parent];
+                neighbors_of_parent.erase(find(neighbors_of_parent.begin(), neighbors_of_parent.end(), node));
             }
-
-            if (best_vc_incl_root.count() < best_vc.count())
-                best_vc = best_vc_incl_root;
         }
+    };
 
-        if (parent == non_node) {
-            // subtree_root == root, so we're done
-            break;
+    // From Wikipedia[1]:
+    //
+    // > For tree graphs, an algorithm finds a minimal vertex cover in polynomial time
+    // > by finding the first leaf in the tree and adding its parent to the minimal
+    // > vertex cover, then deleting the leaf and parent and all associated edges and
+    // > continuing repeatedly until no edges remain in the tree.
+    //
+    // We use the same approach here, except if a node covers some non-tree edge
+    // (i.e. an edge that is on the original graph but not in the cvc_tree), we
+    // always include it in the vertex cover.
+    //
+    // [1] https://en.wikipedia.org/wiki/Vertex_cover#Exact_evaluation
+
+    unordered_set<unsigned> vc;
+
+    while (not nodes_with_nchildren[0].empty()) {
+        const auto leaf = *nodes_with_nchildren[0].begin();
+        nodes_with_nchildren[0].erase(nodes_with_nchildren[0].begin());
+
+        const auto the_parent = parent[leaf];
+
+        if (covers_nontree_edge[leaf] or the_parent == not_a_node) {
+            vc.insert(leaf);
+            delete_node_and_descendents(leaf);
+        } else {
+            vc.insert(the_parent);
+            delete_node_and_descendents(the_parent);
         }
-
-        auto& ntodo = nchildren_todo[parent];
-        assert(ntodo > 0);
-        auto& old_slot = nodes_with_nchildren_todo[ntodo];
-
-        // the subtree rooted at the child `subtree_root` of `parent` is done,
-        old_slot.erase(find(old_slot.begin(), old_slot.end(), parent));
-        nodes_with_nchildren_todo[--ntodo].push_back(parent);
     }
 
-    return best_vc_for_subtree[root][false];
+    for (unsigned u{0}; u < n; ++u) {
+        if (covers_nontree_edge[u])
+            vc.insert(u);
+    }
+
+    return vc;
 }
 
 void init_data_structures(
@@ -201,9 +151,9 @@ void init_data_structures(
     const unsigned root,
 
     // out params
-    vector<unsigned>& node_parent,
-    vector<unsigned>& level,
-    vector<vector<unsigned>>& nodes_with_nchildren_todo,
+    vector<unsigned>& parent,
+    vector<unsigned>& nchildren,
+    vector<unordered_set<unsigned>>& nodes_with_nchildren,
     vector<bool>& covers_nontree_edge
 )
 {
@@ -222,9 +172,9 @@ void init_data_structures(
             ++neigh_idx;
 
         if (neigh_idx == degree) {
-            const auto nchildren = degree - (node != root);
-            level[node] = nchildren;
-            nodes_with_nchildren_todo[nchildren].push_back(node);
+            const auto nchilds = degree - (node != root);
+            nchildren[node] = nchilds;
+            nodes_with_nchildren[nchilds].insert(node);
             covers_nontree_edge[node] = degree != g[node].size();
             stack.pop_back();
             continue;
@@ -234,17 +184,6 @@ void init_data_structures(
         ++neigh_idx;
         assert(next_neighbor[child] == 0);
         stack.push_back(child);
-        node_parent[child] = node;
+        parent[child] = node;
     }
-}
-
-bool is_vc(const vector<vector<unsigned>>& g, const Bitmask& is_included)
-{
-    for (unsigned u{0}; u < g.size(); ++u) {
-        for (const auto v : g[u]) {  // for each edge (u, v)
-            if (not (is_included[u] or is_included[v]))
-                return false;
-        }
-    }
-    return true;
 }
