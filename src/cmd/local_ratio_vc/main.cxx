@@ -1,8 +1,10 @@
+#include <cassert>
 #include <vector>
 
 #include <fmt/base.h>
 #include <fmt/ranges.h>
 
+#include <algorithms/vertex_cover.h>
 #include <io_helpers/io_helpers.h>
 
 using namespace std;
@@ -42,5 +44,6 @@ int main()
     }
 
     // output
+    assert(is_vc(g, vc));
     fmt::println("{} => {}", fmt::join(vc, ", "), vc.size());
 }
