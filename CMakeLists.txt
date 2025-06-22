@@ -61,7 +61,7 @@ target_link_libraries(vc PRIVATE fmt::fmt-header-only algorithms graph_helpers i
 
 add_executable(local_ratio_vc src/cmd/local_ratio_vc/main.cxx)
 target_compile_features(local_ratio_vc PRIVATE cxx_std_11)
-target_link_libraries(local_ratio_vc PRIVATE fmt::fmt-header-only io_helpers)
+target_link_libraries(local_ratio_vc PRIVATE fmt::fmt-header-only algorithms io_helpers)
 
 include(CTest)
 if(BUILD_TESTING)
