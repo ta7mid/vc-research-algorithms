@@ -1,16 +1,14 @@
-cmake_minimum_required(VERSION 3.14)
-project(VertexCoverResearch LANGUAGES C CXX)
+cmake_minimum_required(VERSION 3.23)
+project(VertexCoverResearchAlgorithms LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/sanitizers-cmake/cmake")
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+include(CompilerOptions)
+include(Sanitizers)
 
 find_package(fmt REQUIRED)
-
-option(ENABLE_SANITIZERS "Enables sanitizers" ON)
-option(USE_MEMORY_SANITIZER
-    "Enables MSan (available only in Clang) and disables ASan; has no effect if compiler is not Clang or ENABLE_SANITIZERS is OFF"
-    OFF
-)
 
 add_library(common INTERFACE)
 target_sources(common INTERFACE include/common/constants.h)
@@ -102,24 +100,4 @@ if(BUILD_TESTING)
   catch_discover_tests(dfs_test)
   catch_discover_tests(ilst_test)
   catch_discover_tests(vertex_cover_test)
-endif()
-
-if(ENABLE_SANITIZERS)
-  find_package(Sanitizers REQUIRED)
-
-  set(SANITIZE_UNDEFINED ON)
-  if(USE_MEMORY_SANITIZER)
-    set(SANITIZE_MEMORY ON)
-  else()
-    set(SANITIZE_ADDRESS ON)
-  endif()
-
-  add_sanitizers(
-    algorithms
-    io_helpers
-    graph_helpers
-    cvc
-    vc
-    local_ratio_vc
-  )
 endif()

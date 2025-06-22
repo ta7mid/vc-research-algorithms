@@ -1,13 +1,129 @@
 {
-  "version": 2,
+  "$schema": "https://cmake.org/cmake/help/latest/_downloads/3e2d73bff478d88a7de0de736ba5e361/schema.json",
+  "version": 8,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
   "configurePresets": [
     {
-      "name": "vcpkg",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
+      "name": "mode:debug",
+      "binaryDir": "${sourceDir}/out/build/debug",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-      }
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "hidden": true
+    },
+    {
+      "name": "mode:lint",
+      "inherits": "mode:debug",
+      "binaryDir": "${sourceDir}/out/build/lint",
+      "cacheVariables": {
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy",
+        "CMAKE_CXX_CPPCHECK": "cppcheck",
+        "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use"
+      },
+      "hidden": true
+    },
+    {
+      "name": "mode:with_asan+lsan",
+      "inherits": "mode:debug",
+      "binaryDir": "${sourceDir}/out/build/with_asan+lsan",
+      "cacheVariables": {
+        "ENABLE_ASAN": true,
+        "ENABLE_LSAN": true,
+        "ENABLE_MSAN": false,
+        "ENABLE_TSAN": false
+      },
+      "hidden": true
+    },
+    {
+      "name": "mode:with_asan",
+      "inherits": "mode:debug",
+      "binaryDir": "${sourceDir}/out/build/with_asan",
+      "cacheVariables": {
+        "ENABLE_ASAN": true,
+        "ENABLE_LSAN": false,
+        "ENABLE_MSAN": false,
+        "ENABLE_TSAN": false
+      },
+      "hidden": true
+    },
+    {
+      "name": "mode:with_lsan",
+      "inherits": "mode:debug",
+      "binaryDir": "${sourceDir}/out/build/with_lsan",
+      "cacheVariables": {
+        "ENABLE_ASAN": false,
+        "ENABLE_LSAN": true,
+        "ENABLE_MSAN": false,
+        "ENABLE_TSAN": false
+      },
+      "hidden": true
+    },
+    {
+      "name": "mode:with_msan",
+      "inherits": "mode:debug",
+      "binaryDir": "${sourceDir}/out/build/with_msan",
+      "cacheVariables": {
+        "ENABLE_ASAN": false,
+        "ENABLE_LSAN": false,
+        "ENABLE_MSAN": true,
+        "ENABLE_TSAN": false
+      },
+      "hidden": true
+    },
+    {
+      "name": "mode:with_tsan",
+      "inherits": "mode:debug",
+      "binaryDir": "${sourceDir}/out/build/with_tsan",
+      "cacheVariables": {
+        "ENABLE_ASAN": false,
+        "ENABLE_LSAN": false,
+        "ENABLE_MSAN": false,
+        "ENABLE_TSAN": true
+      },
+      "hidden": true
+    },
+    {
+      "name": "mode:optimized_but_checked",
+      "binaryDir": "${sourceDir}/out/build/optimized_but_checked",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      },
+      "hidden": true
+    },
+    {
+      "name": "mode:optimized",
+      "binaryDir": "${sourceDir}/out/build/optimized",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_INTERPROCEDURAL_OPTIMIZATION": true,
+        "CMAKE_LINK_SEARCH_START_STATIC": true,
+        "CMAKE_LINK_SEARCH_END_STATIC": true
+      },
+      "hidden": true
+    },
+    {
+      "name": "package_manager:vcpkg",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "hidden": true
+    },
+    {
+      "name": "generator:ninja_multi",
+      "generator": "Ninja Multi-Config",
+      "hidden": true
+    },
+    {
+      "name": "generator:ninja",
+      "generator": "Ninja",
+      "hidden": true
+    },
+    {
+      "name": "generator:makefiles",
+      "generator": "Unix Makefiles",
+      "hidden": true
     }
   ]
 }
