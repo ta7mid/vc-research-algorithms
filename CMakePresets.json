@@ -3,92 +3,19 @@
   "version": 8,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 23,
+    "minor": 24,
     "patch": 0
   },
   "configurePresets": [
     {
       "name": "mode:debug",
-      "binaryDir": "${sourceDir}/out/build/debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       },
       "hidden": true
     },
     {
-      "name": "mode:lint",
-      "inherits": "mode:debug",
-      "binaryDir": "${sourceDir}/out/build/lint",
-      "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy",
-        "CMAKE_CXX_CPPCHECK": "cppcheck",
-        "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use"
-      },
-      "hidden": true
-    },
-    {
-      "name": "mode:with_asan+lsan",
-      "inherits": "mode:debug",
-      "binaryDir": "${sourceDir}/out/build/with_asan+lsan",
-      "cacheVariables": {
-        "ENABLE_ASAN": true,
-        "ENABLE_LSAN": true,
-        "ENABLE_MSAN": false,
-        "ENABLE_TSAN": false
-      },
-      "hidden": true
-    },
-    {
-      "name": "mode:with_asan",
-      "inherits": "mode:debug",
-      "binaryDir": "${sourceDir}/out/build/with_asan",
-      "cacheVariables": {
-        "ENABLE_ASAN": true,
-        "ENABLE_LSAN": false,
-        "ENABLE_MSAN": false,
-        "ENABLE_TSAN": false
-      },
-      "hidden": true
-    },
-    {
-      "name": "mode:with_lsan",
-      "inherits": "mode:debug",
-      "binaryDir": "${sourceDir}/out/build/with_lsan",
-      "cacheVariables": {
-        "ENABLE_ASAN": false,
-        "ENABLE_LSAN": true,
-        "ENABLE_MSAN": false,
-        "ENABLE_TSAN": false
-      },
-      "hidden": true
-    },
-    {
-      "name": "mode:with_msan",
-      "inherits": "mode:debug",
-      "binaryDir": "${sourceDir}/out/build/with_msan",
-      "cacheVariables": {
-        "ENABLE_ASAN": false,
-        "ENABLE_LSAN": false,
-        "ENABLE_MSAN": true,
-        "ENABLE_TSAN": false
-      },
-      "hidden": true
-    },
-    {
-      "name": "mode:with_tsan",
-      "inherits": "mode:debug",
-      "binaryDir": "${sourceDir}/out/build/with_tsan",
-      "cacheVariables": {
-        "ENABLE_ASAN": false,
-        "ENABLE_LSAN": false,
-        "ENABLE_MSAN": false,
-        "ENABLE_TSAN": true
-      },
-      "hidden": true
-    },
-    {
       "name": "mode:optimized_but_checked",
-      "binaryDir": "${sourceDir}/out/build/optimized_but_checked",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       },
@@ -96,7 +23,6 @@
     },
     {
       "name": "mode:optimized",
-      "binaryDir": "${sourceDir}/out/build/optimized",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_INTERPROCEDURAL_OPTIMIZATION": true,
@@ -106,24 +32,155 @@
       "hidden": true
     },
     {
+      "name": "condition:creates_compilation_database",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      },
+      "condition": {
+        "type": "notEquals",
+        "lhs": "$env{COMPILATION_DATABASE_DIR}",
+        "rhs": ""
+      },
+      "hidden": true
+    },
+    {
+      "name": "analyzer:clang_tidy",
+      "inherits": [
+        "condition:creates_compilation_database"
+      ],
+      "cacheVariables": {
+        "CMAKE_CXX_CLANG_TIDY": "$env{CLANG_TIDY_EXECUTABLE};--config-file=${sourceDir}/.clang-tidy;-p=$env{COMPILATION_DATABASE_DIR};--export-fixes=${sourceDir}/out/lint/clang_tidy_fixes.yaml;--verify-config;$env{CLANG_TIDY_EXTRA_ARGS}"
+      },
+      "condition": {
+        "type": "notEquals",
+        "lhs": "$env{CLANG_TIDY_EXECUTABLE}",
+        "rhs": ""
+      },
+      "hidden": true
+    },
+    {
+      "name": "analyzer:cppcheck",
+      "cacheVariables": {
+        "CMAKE_CXX_CPPCHECK": "$env{CPPCHECK_EXECUTABLE};--std=c++17;--cppcheck-build-dir=${sourceDir}/out/lint/cppcheck_cache;$env{CPPCHECK_EXTRA_ARGS}"
+      },
+      "condition": {
+        "type": "notEquals",
+        "lhs": "$env{CPPCHECK_EXECUTABLE}",
+        "rhs": ""
+      },
+      "hidden": true
+    },
+    {
+      "name": "analyzer:iwyu",
+      "cacheVariables": {
+        "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "$env{IWYU_EXECUTABLE};-Xiwyu;--no_comments;-Xiwyu;--no_fwd_decls;$env{IWYU_EXTRA_ARGS}"
+      },
+      "condition": {
+        "type": "notEquals",
+        "lhs": "$env{IWYU_EXECUTABLE}",
+        "rhs": ""
+      },
+      "hidden": true
+    },
+    {
+      "name": "analyzer:asan",
+      "cacheVariables": {
+        "ENABLE_ASAN": true,
+        "ENABLE_MSAN": false,
+        "ENABLE_TSAN": false
+      },
+      "hidden": true
+    },
+    {
+      "name": "analyzer:lsan",
+      "cacheVariables": {
+        "ENABLE_LSAN": true,
+        "ENABLE_MSAN": false,
+        "ENABLE_TSAN": false
+      },
+      "hidden": true
+    },
+    {
+      "name": "analyzer:msan",
+      "cacheVariables": {
+        "ENABLE_ASAN": false,
+        "ENABLE_LSAN": false,
+        "ENABLE_MSAN": true,
+        "ENABLE_TSAN": false
+      },
+      "hidden": true
+    },
+    {
+      "name": "analyzer:tsan",
+      "cacheVariables": {
+        "ENABLE_ASAN": false,
+        "ENABLE_LSAN": false,
+        "ENABLE_MSAN": false,
+        "ENABLE_TSAN": true
+      },
+      "hidden": true
+    },
+    {
+      "name": "analyzer:ubsan",
+      "cacheVariables": {
+        "ENABLE_UBSAN": true
+      },
+      "hidden": true
+    },
+    {
+      "name": "analyzer:asan+lsan",
+      "inherits": [
+        "analyzer:asan",
+        "analyzer:lsan"
+      ],
+      "hidden": true
+    },
+    {
       "name": "package_manager:vcpkg",
       "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "condition": {
+        "type": "notEquals",
+        "lhs": "$env{VCPKG_ROOT}",
+        "rhs": ""
+      },
       "hidden": true
     },
     {
-      "name": "generator:ninja_multi",
+      "name": "package_manager:cpm",
+      "cacheVariables": {
+        "USE_CPM": true
+      },
+      "hidden": true
+    },
+    {
+      "name": "Debug (Sample)",
+      "inherits": [
+        "mode:debug",
+        "package_manager:cpm",
+        "analyzer:ubsan"
+      ],
       "generator": "Ninja Multi-Config",
-      "hidden": true
+      "binaryDir": "$env{COMPILATION_DATABASE_DIR}",
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_COLOR_DIAGNOSTICS": true
+      },
+      "environment": {
+        "COMPILATION_DATABASE_DIR": "${sourceDir}/out/build/debug"
+      }
     },
     {
-      "name": "generator:ninja",
-      "generator": "Ninja",
-      "hidden": true
-    },
-    {
-      "name": "generator:makefiles",
-      "generator": "Unix Makefiles",
-      "hidden": true
+      "name": "Optimized (Sample)",
+      "inherits": [
+        "mode:optimized",
+        "package_manager:cpm"
+      ],
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/out/build/optimized",
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_COLOR_DIAGNOSTICS": true
+      }
     }
   ]
 }

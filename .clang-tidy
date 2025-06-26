@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://json.schemastore.org/clang-tidy.json
+
+---
+ExtraArgs: [
+  -std=c++17,
+  -pedantic-errors,
+
+  # enable all warnings
+  -Weverything,
+
+  # then disable these specific warnings:
+  -Wno-c++98-compat,
+  -Wno-missing-prototypes,
+]
+
+Checks: [
+  # enable all checks:
+  "*",
+
+  # then disable these categories of checks:
+  -abseil-*,
+  -altera-*,
+  -android-*,
+  -fuchsia-*,
+  -google-*,
+  -llvmlibc-*,
+  -zircon-*,
+
+  # and these specific checks:
+  -hicpp-braces-around-statements,
+  -llvm-prefer-isa-or-dyn-cast-in-conditionals,
+  -llvm-prefer-register-over-unsigned,
+  -llvm-twine-local,
+  -modernize-use-trailing-return-type,
+  -readability-braces-around-statements,
+  -readability-identifier-length,
+]
+
+CheckOptions:
+  readability-identifier-naming.VariableCase: lower_case
+  readability-identifier-naming.FunctionCase: lower_case
+  readability-identifier-naming.ClassCase: Leading_upper_snake_case
+  readability-identifier-naming.StructCase: Leading_upper_snake_case
+  readability-identifier-naming.TemplateParameterCase: CamelCase
+  llvm-namespace-comment.ShortNamespaceLines: 10
+
+UseColor: true

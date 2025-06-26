@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://json.schemastore.org/clangd.json
+
+CompileFlags:
+  CompilationDatabase: out/build/debug
+  Add: [
+    -xc++,  # treat all files as C++
+    -std=c++17,
+    -pedantic-errors,
+
+    # enable all warnings:
+    -Weverything,
+
+    # then disable these specific warnings:
+    -Wno-c++98-compat,
+    -Wno-missing-prototypes,
+  ]
+
+Diagnostics:
+  ClangTidy:
+    FastCheckFilter: Loose
+  UnusedIncludes: Strict
+  MissingIncludes: Strict

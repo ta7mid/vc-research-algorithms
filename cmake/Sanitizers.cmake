@@ -1,3 +1,5 @@
+# Sanitizers.cmake
+#
 # Adds options for enabling AddressSanitizer, LeakSanitizer, MemorySanitizer, ThreadSanitizer, and
 # UndefinedBehaviorSanitizer
 #
@@ -12,7 +14,7 @@
 #     Permission is given to use any of the code samples in this work without restriction. Attribution is not required.
 #
 
-option(ENABLE_ASAN "Enable AddressSanitizer" NO)
+option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
 
 if(MSVC)
   if(ENABLE_ASAN)
@@ -23,15 +25,15 @@ if(MSVC)
       CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
     )
     add_compile_options(
-      /fsanitize=address
-      /fsanitize-address-use-after-return
+      "/fsanitize=address"
+      "/fsanitize-address-use-after-return"
     )
   endif()
-elseif(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-  option(ENABLE_LSAN "Enable LeakSanitizer" NO)
-  option(ENABLE_TSAN "Enable ThreadSanitizer" NO)
+elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU|Clang")
+  option(ENABLE_LSAN "Enable LeakSanitizer" OFF)
+  option(ENABLE_TSAN "Enable ThreadSanitizer" OFF)
   if(NOT APPLE)
-    option(ENABLE_MSAN "Enable MemorySanitizer" NO)
+    option(ENABLE_MSAN "Enable MemorySanitizer" OFF)
   endif()
   option(ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer" $<NOT:$<CONFIG:Release>>)
 
@@ -48,7 +50,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
   endif()
 
   set(ubsan_flag "-fsanitize=undefined")
-  if(CMAKE_C_COMPILER_ID STREQUAL GNU)
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html#index-fsanitize_003dundefined
     string(APPEND ubsan_flag ",bounds-strict")
   else()
@@ -57,18 +59,18 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
   endif()
 
   add_compile_options(
-    -fno-omit-frame-pointer
-    $<$<BOOL:${ENABLE_ASAN}>:-fsanitize=address>
-    $<$<BOOL:${ENABLE_LSAN}>:-fsanitize=leak>
-    $<$<BOOL:${ENABLE_MSAN}>:-fsanitize=memory>
-    $<$<BOOL:${ENABLE_TSAN}>:-fsanitize=thread>
-    $<$<BOOL:${ENABLE_UBSAN}>:${ubsan_flag}>
+    "-fno-omit-frame-pointer"
+    "$<$<BOOL:${ENABLE_ASAN}>:-fsanitize=address>"
+    "$<$<BOOL:${ENABLE_LSAN}>:-fsanitize=leak>"
+    "$<$<BOOL:${ENABLE_MSAN}>:-fsanitize=memory>"
+    "$<$<BOOL:${ENABLE_TSAN}>:-fsanitize=thread>"
+    "$<$<BOOL:${ENABLE_UBSAN}>:${ubsan_flag}>"
   )
   add_link_options(
-    $<$<BOOL:${ENABLE_ASAN}>:-fsanitize=address>
-    $<$<BOOL:${ENABLE_LSAN}>:-fsanitize=leak>
-    $<$<BOOL:${ENABLE_MSAN}>:-fsanitize=memory>
-    $<$<BOOL:${ENABLE_TSAN}>:-fsanitize=thread>
-    $<$<BOOL:${ENABLE_UBSAN}>:${ubsan_flag}>
+    "$<$<BOOL:${ENABLE_ASAN}>:-fsanitize=address>"
+    "$<$<BOOL:${ENABLE_LSAN}>:-fsanitize=leak>"
+    "$<$<BOOL:${ENABLE_MSAN}>:-fsanitize=memory>"
+    "$<$<BOOL:${ENABLE_TSAN}>:-fsanitize=thread>"
+    "$<$<BOOL:${ENABLE_UBSAN}>:${ubsan_flag}>"
   )
 endif()
