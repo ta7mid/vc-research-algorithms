@@ -8,179 +8,259 @@
   },
   "configurePresets": [
     {
-      "name": "mode:debug",
+      "hidden": true,
+      "name": "package_manager:vcpkg",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      },
-      "hidden": true
-    },
-    {
-      "name": "mode:optimized_but_checked",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-      },
-      "hidden": true
-    },
-    {
-      "name": "mode:optimized",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_INTERPROCEDURAL_OPTIMIZATION": true,
-        "CMAKE_LINK_SEARCH_START_STATIC": true,
-        "CMAKE_LINK_SEARCH_END_STATIC": true
-      },
-      "hidden": true
-    },
-    {
-      "name": "condition:creates_compilation_database",
-      "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+        "USE_CPM": false
       },
       "condition": {
         "type": "notEquals",
-        "lhs": "$env{COMPILATION_DATABASE_DIR}",
+        "lhs": "$env{VCPKG_ROOT}",
         "rhs": ""
-      },
-      "hidden": true
+      }
     },
     {
-      "name": "analyzer:clang_tidy",
-      "inherits": [
-        "condition:creates_compilation_database"
-      ],
+      "hidden": true,
+      "name": "package_manager:cpm",
       "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "$env{CLANG_TIDY_EXECUTABLE};--config-file=${sourceDir}/.clang-tidy;-p=$env{COMPILATION_DATABASE_DIR};--export-fixes=${sourceDir}/out/lint/clang_tidy_fixes.yaml;--verify-config;$env{CLANG_TIDY_EXTRA_ARGS}"
+        "USE_CPM": true
+      }
+    },
+    {
+      "hidden": true,
+      "name": "toolchain:homebrew_clang",
+      "environment": {
+        "CC": "$env{HOMEBREW_PREFIX}/opt/llvm/bin/clang",
+        "CXX": "$env{HOMEBREW_PREFIX}/opt/llvm/bin/clang++"
+      },
+      "condition": {
+        "type": "notEquals",
+        "lhs": "$env{HOMEBREW_PREFIX}",
+        "rhs": ""
+      }
+    },
+    {
+      "hidden": true,
+      "name": "toolchain:homebrew_gcc",
+      "environment": {
+        "CC": "$env{HOMEBREW_PREFIX}/opt/gcc/bin/gcc-15",
+        "CXX": "$env{HOMEBREW_PREFIX}/opt/gcc/bin/g++-15"
+      },
+      "condition": {
+        "type": "notEquals",
+        "lhs": "$env{HOMEBREW_PREFIX}",
+        "rhs": ""
+      }
+    },
+    {
+      "hidden": true,
+      "name": "mode:debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "hidden": true,
+      "name": "mode:optimized_but_checked",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_OPTIMIZE_DEPENDENCIES": true
+      }
+    },
+    {
+      "hidden": true,
+      "name": "mode:optimized",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_OPTIMIZE_DEPENDENCIES": true,
+        "CMAKE_INTERPROCEDURAL_OPTIMIZATION": true,
+        "CMAKE_LINK_SEARCH_START_STATIC": true,
+        "CMAKE_LINK_SEARCH_END_STATIC": true
+      }
+    },
+    {
+      "hidden": true,
+      "name": "analyzer:clang_tidy",
+      "cacheVariables": {
+        "CMAKE_CXX_CLANG_TIDY": "$env{CLANG_TIDY_EXECUTABLE};-config-file=${sourceDir}/.clang-tidy;-verify-config"
       },
       "condition": {
         "type": "notEquals",
         "lhs": "$env{CLANG_TIDY_EXECUTABLE}",
         "rhs": ""
-      },
-      "hidden": true
+      }
     },
     {
+      "hidden": true,
       "name": "analyzer:cppcheck",
       "cacheVariables": {
-        "CMAKE_CXX_CPPCHECK": "$env{CPPCHECK_EXECUTABLE};--std=c++17;--cppcheck-build-dir=${sourceDir}/out/lint/cppcheck_cache;$env{CPPCHECK_EXTRA_ARGS}"
+        "CMAKE_CXX_CPPCHECK": "$env{CPPCHECK_EXECUTABLE};--std=c++17;--check-level=exhaustive"
       },
       "condition": {
         "type": "notEquals",
         "lhs": "$env{CPPCHECK_EXECUTABLE}",
         "rhs": ""
-      },
-      "hidden": true
+      }
     },
     {
+      "hidden": true,
       "name": "analyzer:iwyu",
       "cacheVariables": {
-        "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "$env{IWYU_EXECUTABLE};-Xiwyu;--no_comments;-Xiwyu;--no_fwd_decls;$env{IWYU_EXTRA_ARGS}"
+        "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "$env{INCLUDE_WHAT_YOU_USE_EXECUTABLE};-Xiwyu --mapping-file=${sourceDir}/tools/iwyu/libcxx.imp;-Xiwyu --comment_style=long;-Xiwyu --verbose=3;-Xiwyu --no_fwd_decls"
       },
       "condition": {
         "type": "notEquals",
-        "lhs": "$env{IWYU_EXECUTABLE}",
+        "lhs": "$env{INCLUDE_WHAT_YOU_USE_EXECUTABLE}",
         "rhs": ""
-      },
-      "hidden": true
+      }
     },
     {
+      "hidden": true,
+      "name": "analyzer:clang_tidy_with_cmd_target",
+      "cacheVariables": {
+        "ENABLE_CMD_TARGET_RUN_CLANG_TIDY": true
+      }
+    },
+    {
+      "hidden": true,
+      "name": "analyzer:cppcheck_with_cmd_target",
+      "cacheVariables": {
+        "ENABLE_CMD_TARGET_RUN_CPPCHECK": true
+      }
+    },
+    {
+      "hidden": true,
       "name": "analyzer:asan",
       "cacheVariables": {
         "ENABLE_ASAN": true,
         "ENABLE_MSAN": false,
         "ENABLE_TSAN": false
-      },
-      "hidden": true
+      }
     },
     {
+      "hidden": true,
       "name": "analyzer:lsan",
       "cacheVariables": {
         "ENABLE_LSAN": true,
         "ENABLE_MSAN": false,
         "ENABLE_TSAN": false
-      },
-      "hidden": true
+      }
     },
     {
+      "hidden": true,
       "name": "analyzer:msan",
       "cacheVariables": {
         "ENABLE_ASAN": false,
         "ENABLE_LSAN": false,
         "ENABLE_MSAN": true,
         "ENABLE_TSAN": false
-      },
-      "hidden": true
+      }
     },
     {
+      "hidden": true,
       "name": "analyzer:tsan",
       "cacheVariables": {
         "ENABLE_ASAN": false,
         "ENABLE_LSAN": false,
         "ENABLE_MSAN": false,
         "ENABLE_TSAN": true
-      },
-      "hidden": true
+      }
     },
     {
+      "hidden": true,
       "name": "analyzer:ubsan",
       "cacheVariables": {
         "ENABLE_UBSAN": true
-      },
-      "hidden": true
+      }
     },
     {
+      "hidden": true,
       "name": "analyzer:asan+lsan",
       "inherits": [
         "analyzer:asan",
         "analyzer:lsan"
-      ],
-      "hidden": true
+      ]
     },
     {
-      "name": "package_manager:vcpkg",
-      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-      "condition": {
-        "type": "notEquals",
-        "lhs": "$env{VCPKG_ROOT}",
-        "rhs": ""
-      },
-      "hidden": true
-    },
-    {
-      "name": "package_manager:cpm",
+      "hidden": true,
+      "name": "base:recommended_defaults",
+      "generator": "Ninja Multi-Config",
       "cacheVariables": {
-        "USE_CPM": true
-      },
-      "hidden": true
+        "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_COLOR_DIAGNOSTICS": true
+      }
     },
     {
-      "name": "Debug (Sample)",
+      "name": "CPM-HomebrewClang-Debug",
       "inherits": [
-        "mode:debug",
+        "base:recommended_defaults",
         "package_manager:cpm",
+        "toolchain:homebrew_clang",
+        "mode:debug",
         "analyzer:ubsan"
       ],
-      "generator": "Ninja Multi-Config",
-      "binaryDir": "$env{COMPILATION_DATABASE_DIR}",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_CXX_STANDARD": "17",
-        "CMAKE_COLOR_DIAGNOSTICS": true
-      },
-      "environment": {
-        "COMPILATION_DATABASE_DIR": "${sourceDir}/out/build/debug"
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
       }
     },
     {
-      "name": "Optimized (Sample)",
+      "name": "CPM-HomebrewClang-Lint",
       "inherits": [
-        "mode:optimized",
-        "package_manager:cpm"
+        "base:recommended_defaults",
+        "package_manager:cpm",
+        "toolchain:homebrew_clang",
+        "mode:debug",
+        "analyzer:clang_tidy",
+        "analyzer:cppcheck",
+        "analyzer:iwyu",
+        "analyzer:clang_tidy_with_cmd_target",
+        "analyzer:cppcheck_with_cmd_target"
       ],
-      "generator": "Ninja Multi-Config",
-      "binaryDir": "${sourceDir}/out/build/optimized",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_CXX_STANDARD": "17",
-        "CMAKE_COLOR_DIAGNOSTICS": true
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_VERIFY_INTERFACE_HEADER_SETS": false
+      },
+      "environment": {
+        "CLANG_TIDY_EXECUTABLE": "$env{HOMEBREW_PREFIX}/opt/llvm/bin/clang-tidy",
+        "RUN_CLANG_TIDY_EXECUTABLE": "$env{HOMEBREW_PREFIX}/opt/llvm/bin/run-clang-tidy",
+        "CPPCHECK_EXECUTABLE": "$env{HOMEBREW_PREFIX}/opt/cppcheck/bin/cppcheck",
+        "INCLUDE_WHAT_YOU_USE_EXECUTABLE": "$env{HOMEBREW_PREFIX}/opt/include-what-you-use/bin/include-what-you-use"
       }
+    },
+    {
+      "name": "CPM-HomebrewClang-ASan",
+      "inherits": [
+        "base:recommended_defaults",
+        "package_manager:cpm",
+        "toolchain:homebrew_clang",
+        "mode:debug",
+        "analyzer:asan"
+      ],
+      "binaryDir": "${sourceDir}/out/build/${presetName}"
+    },
+    {
+      "name": "CPM-HomebrewClang-OptimizedButChecked",
+      "inherits": [
+        "base:recommended_defaults",
+        "package_manager:cpm",
+        "toolchain:homebrew_clang",
+        "mode:optimized_but_checked",
+        "analyzer:ubsan"
+      ],
+      "binaryDir": "${sourceDir}/out/build/${presetName}"
+    },
+    {
+      "name": "CPM-HomebrewClang-Optimized",
+      "inherits": [
+        "base:recommended_defaults",
+        "package_manager:cpm",
+        "toolchain:homebrew_clang",
+        "mode:optimized"
+      ],
+      "binaryDir": "${sourceDir}/out/build/${presetName}"
     }
   ]
 }

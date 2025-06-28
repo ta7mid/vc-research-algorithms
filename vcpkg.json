@@ -1,4 +1,6 @@
 {
+  "name": "vertex-cover-research-algorithms",
+  "version": "0.0.1",
   "dependencies": [
     "fmt",
     "catch2"

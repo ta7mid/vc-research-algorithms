@@ -173,7 +173,7 @@ void init_data_structures(
 
         if (neigh_idx == degree) {
             const auto nchilds = degree - (node != root);
-            nchildren[node] = nchilds;
+            nchildren[node] = static_cast<unsigned>(nchilds);
             nodes_with_nchildren[nchilds].insert(node);
             covers_nontree_edge[node] = degree != g[node].size();
             stack.pop_back();

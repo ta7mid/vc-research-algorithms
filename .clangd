@@ -1,7 +1,6 @@
 # yaml-language-server: $schema=https://json.schemastore.org/clangd.json
 
 CompileFlags:
-  CompilationDatabase: out/build/debug
   Add: [
     -xc++,  # treat all files as C++
     -std=c++17,

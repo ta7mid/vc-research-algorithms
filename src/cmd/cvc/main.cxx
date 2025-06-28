@@ -22,7 +22,6 @@ int main()
     vector<vector<unsigned>> g{read_simple_graph_from_stdin()};  //< the input graph
     if (not is_connected(g))
         throw domain_error{"not a connected graph"};
-    const auto order = unsigned(g.size());  //< the number of vertices in the input graph
 
     // sort the nodes in descending of their degrees
     unsigned root{order_vertices(g, degree_descending)};  //< root of the DFS tree

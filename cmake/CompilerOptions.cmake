@@ -67,6 +67,8 @@ endif()
 #
 # Implementation-specific debug mode
 #
+# Source: https://stackoverflow.com/a/78242553
+#
 
 include(CheckCXXSymbolExists)
 
@@ -81,8 +83,8 @@ check_cxx_symbol_exists("__GLIBCXX__" "${header}" using_libstdcxx)
 
 if(using_libstdcxx)
   add_compile_definitions(
-    "$<$<CONFIG:Debug>:_GLIBCXX_DEBUG>"
-    "$<$<CONFIG:RelWithDebInfo>:_GLIBCXX_ASSERTIONS>"
+    $<$<CONFIG:Debug>:_GLIBCXX_DEBUG>
+    $<$<CONFIG:RelWithDebInfo>:_GLIBCXX_ASSERTIONS>
   )
   return()  # skip the check for LLVM libc++
 endif()
@@ -91,5 +93,5 @@ endif()
 check_cxx_symbol_exists("_LIBCPP_VERSION" "${header}" using_libcxx)
 
 if(using_libcxx)
-  add_compile_definitions("$<$<CONFIG:Debug>:_LIBCPP_DEBUG>")
+  add_compile_definitions($<$<CONFIG:Debug>:_LIBCPP_DEBUG>)
 endif()

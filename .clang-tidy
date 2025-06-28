@@ -2,6 +2,7 @@
 
 ---
 ExtraArgs: [
+  -xc++,  # treat all files as C++
   -std=c++17,
   -pedantic-errors,
 
@@ -27,6 +28,7 @@ Checks: [
   -zircon-*,
 
   # and these specific checks:
+  -boost-use-ranges,
   -hicpp-braces-around-statements,
   -llvm-prefer-isa-or-dyn-cast-in-conditionals,
   -llvm-prefer-register-over-unsigned,

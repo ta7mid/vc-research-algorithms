@@ -4,6 +4,7 @@ project(VertexCoverResearchAlgorithms LANGUAGES CXX)
 include(CTest)
 include("cmake/Dependencies.cmake")
 include("cmake/CompilerOptions.cmake")
+include("cmake/Linters.cmake")
 include("cmake/Sanitizers.cmake")
 
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -14,26 +15,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Library targets
 #
 
-add_library(common INTERFACE)
-target_sources(common
-  INTERFACE
-    FILE_SET HEADERS
-    BASE_DIRS "include/"
-    FILES "common/constants.h"
-)
-target_compile_features(common INTERFACE cxx_constexpr)
-
 add_library(algorithms INTERFACE)
 target_sources(algorithms
   INTERFACE
     FILE_SET HEADERS
     BASE_DIRS "include/"
     FILES
-      "algorithms/connectivity.h"
-      "algorithms/dfs.h"
-      "algorithms/ilst.h"
-      "algorithms/orderings.h"
-      "algorithms/vertex_cover.h"
+      "include/algorithms/connectivity.h"
+      "include/algorithms/dfs.h"
+      "include/algorithms/ilst.h"
+      "include/algorithms/orderings.h"
+      "include/algorithms/vertex_cover.h"
   INTERFACE
     "src/algorithms/connectivity.cxx"
     "src/algorithms/dfs.cxx"
@@ -49,20 +41,20 @@ target_sources(io_helpers
   INTERFACE
     FILE_SET HEADERS
     BASE_DIRS "include/"
-    FILES "io_helpers/io_helpers.h"
+    FILES "include/io_helpers/io_helpers.h"
   INTERFACE
     "src/io_helpers/io_helpers.cxx"
     "src/io_helpers/io_helpers.h"
 )
 target_compile_features(io_helpers INTERFACE cxx_std_11)
-target_link_libraries(io_helpers INTERFACE fmt::fmt-header-only common)
+target_link_libraries(io_helpers INTERFACE fmt::fmt)
 
 add_library(graph_helpers INTERFACE)
 target_sources(graph_helpers
   INTERFACE
     FILE_SET HEADERS
     BASE_DIRS "include/"
-    FILES "graph_helpers/graph_helpers.h"
+    FILES "include/graph_helpers/graph_helpers.h"
   INTERFACE "src/graph_helpers/graph_helpers.cxx"
 )
 target_compile_features(graph_helpers INTERFACE cxx_std_17)
@@ -74,15 +66,15 @@ target_compile_features(graph_helpers INTERFACE cxx_std_17)
 
 add_executable(cvc "src/cmd/cvc/main.cxx")
 target_compile_features(cvc PRIVATE cxx_std_11)
-target_link_libraries(cvc PRIVATE fmt::fmt-header-only algorithms graph_helpers io_helpers)
+target_link_libraries(cvc PRIVATE fmt::fmt algorithms graph_helpers io_helpers)
 
 add_executable(vc "src/cmd/vc/main.cxx")
 target_compile_features(vc PRIVATE cxx_std_11)
-target_link_libraries(vc PRIVATE fmt::fmt-header-only algorithms graph_helpers io_helpers)
+target_link_libraries(vc PRIVATE fmt::fmt algorithms graph_helpers io_helpers)
 
 add_executable(local_ratio_vc "src/cmd/local_ratio_vc/main.cxx")
 target_compile_features(local_ratio_vc PRIVATE cxx_std_11)
-target_link_libraries(local_ratio_vc PRIVATE fmt::fmt-header-only algorithms io_helpers)
+target_link_libraries(local_ratio_vc PRIVATE fmt::fmt algorithms io_helpers)
 
 
 #
